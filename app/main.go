@@ -19,7 +19,7 @@ func main() {
 }
 
 func bot() {
-	fmt.Println("Hello world ")
+	fmt.Println("Hello world")
 
 	performAction(api)
 }
