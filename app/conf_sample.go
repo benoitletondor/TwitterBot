@@ -6,3 +6,7 @@ package main
 //var CONSUMER_SECRET string = ""
 //var TOKEN string = ""
 //var TOKEN_SECRET string = ""
+
+//var ACTION_FOLLOW_WEIGHT int = 1
+//var ACTION_RETWEET_WEIGHT int = 1
+//var ACTION_FAVORITE_WEIGHT int = 1
