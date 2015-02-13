@@ -10,8 +10,11 @@ package main
 //var ACTION_FOLLOW_WEIGHT int = 1
 //var ACTION_RETWEET_WEIGHT int = 1
 //var ACTION_FAVORITE_WEIGHT int = 1
+//var ACTION_TWEET_WEIGHT int = 1
 
 
-//var MYSQL_USER = ""
-//var MYSQL_PASSWORD = ""
-//var MYSQL_SCHEMA = ""
+//var MYSQL_USER string = ""
+//var MYSQL_PASSWORD string = ""
+//var MYSQL_SCHEMA string = ""
+
+//var DATA_SOURCE string = "http://api.com"

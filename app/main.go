@@ -1,10 +1,12 @@
 package main
 
-import "github.com/ChimeraCoder/anaconda"
-import "github.com/robfig/cron"
-import "database/sql"
-import _ "github.com/go-sql-driver/mysql"
-import "fmt"
+import (
+	"github.com/ChimeraCoder/anaconda"
+	"github.com/robfig/cron"
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
+	"fmt"
+)
 
 var api *anaconda.TwitterApi
 var db *sql.DB
@@ -39,7 +41,6 @@ func main() {
 
 func bot() {
 	fmt.Println("Hello world")
-	fmt.Println(db)
 
 	performAction()
 }
