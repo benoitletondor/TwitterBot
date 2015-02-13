@@ -1,6 +1,5 @@
 package main
 
-import "github.com/ChimeraCoder/anaconda"
 import "math/rand"
 import "fmt"
 
@@ -15,7 +14,7 @@ type Action struct {
 	weight int
 }
 
-func performAction(api *anaconda.TwitterApi) {
+func performAction() {
 	actions := make([]Action, 0, 3)
 
 	actions = append(actions, Action{name:_FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
@@ -32,25 +31,25 @@ func performAction(api *anaconda.TwitterApi) {
 
 	switch selectedAction.name {
 		case _FOLLOW:
-			actionFollow(api)
+			actionFollow()
 			break
 		case _RETWEET:
-			actionRetweet(api)
+			actionRetweet()
 			break
 		case _FAVORITE:
-			actionFavorite(api)
+			actionFavorite()
 			break
 	}
 }
 
-func actionFollow(api *anaconda.TwitterApi) {
+func actionFollow() {
 	fmt.Println("Action follow")
 }
 
-func actionRetweet(api *anaconda.TwitterApi) {
+func actionRetweet() {
 	fmt.Println("Action retweet")
 }
 
-func actionFavorite(api *anaconda.TwitterApi) {
+func actionFavorite() {
 	fmt.Println("Action fav")
 }

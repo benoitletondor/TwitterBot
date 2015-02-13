@@ -10,3 +10,8 @@ package main
 //var ACTION_FOLLOW_WEIGHT int = 1
 //var ACTION_RETWEET_WEIGHT int = 1
 //var ACTION_FAVORITE_WEIGHT int = 1
+
+
+//var MYSQL_USER = ""
+//var MYSQL_PASSWORD = ""
+//var MYSQL_SCHEMA = ""
