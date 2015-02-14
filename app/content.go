@@ -13,20 +13,19 @@ type Content struct {
 	url string
 }
 
-func generateTweetContent() (string, error) {
+func generateTweetContent() (Content, error) {
 	contents, err := callAPI()
 	if( err != nil ) {
-		return "", err
+		return Content{}, err
 	}
 
 	for _, content := range contents {
 		// TODO check already tweeted
 
-		return content.text+" "+content.url, nil
+		return content, nil
 	}
-	
 
-	return "", errors.New("No tweet content found")
+	return Content{}, errors.New("No tweet content found")
 }
 
 func callAPI() ([]Content, error) {

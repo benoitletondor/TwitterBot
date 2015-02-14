@@ -3,6 +3,7 @@ package main
 import (
 	"math/rand"
 	"fmt"
+	"net/url"
 )
 
 const (
@@ -66,9 +67,17 @@ func actionTweet() {
 
 	content, err := generateTweetContent()
 	if( err != nil ) {
-		fmt.Println("Error while generating tweet content : ", err)
+		fmt.Println("Error while getting tweet content : ", err)
+		return
+	}
+	
+	tweet, err := api.PostTweet(content.text+" "+content.url, url.Values{})
+	if( err != nil ) {
+		fmt.Println("Error while posting tweet", err)
 		return
 	}
 
-	fmt.Println("Tweet : ", content)
+	// TODO save in DB
+
+	fmt.Println("Tweet posted : ", tweet)
 }
