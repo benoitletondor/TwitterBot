@@ -11,6 +11,7 @@ package main
 //const ACTION_RETWEET_WEIGHT int = 1
 //const ACTION_FAVORITE_WEIGHT int = 1
 //const ACTION_TWEET_WEIGHT int = 1
+//const FAV_LIMIT_IN_A_ROW int = 5
 
 //const MYSQL_USER string = ""
 //const MYSQL_PASSWORD string = ""

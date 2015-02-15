@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -90,6 +91,32 @@ func actionRetweet() {
 
 func actionFavorite() {
 	fmt.Println("Action fav")
+
+	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], nil)
+	if err != nil {
+		fmt.Println("Error while querying twitter API", err)
+		return
+	}
+
+	i := 0
+	for _, tweet := range searchResult.Statuses {
+		if i >= FAV_LIMIT_IN_A_ROW {
+			return
+		}
+
+		_, err = api.Favorite(tweet.Id)
+		if err != nil {
+			if strings.Contains(err.Error(), "139") { // Case of an already favorited tweet
+				continue
+			}
+
+			fmt.Println("Error while favoriting tweet", err)
+		} else {
+			fmt.Println("Just favorited tweet : ", tweet.Text)
+		}
+
+		i++
+	}
 }
 
 func actionTweet() {
