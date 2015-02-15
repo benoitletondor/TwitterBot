@@ -16,4 +16,4 @@ package main
 //const MYSQL_PASSWORD string = ""
 //const MYSQL_SCHEMA string = ""
 
-//const DATA_SOURCE string = "http://api.com"
+//var DATA_SOURCES = [2]string{"http://api1", "http://api2"}

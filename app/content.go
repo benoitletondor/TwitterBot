@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 )
 
@@ -32,7 +33,7 @@ func generateTweetContent() (Content, error) {
 }
 
 func callAPI() ([]Content, error) {
-	content, err := getContent(DATA_SOURCE)
+	content, err := getContent(getContentURL())
 	if err != nil {
 		fmt.Println("Error while calling API")
 		return nil, err
@@ -118,6 +119,12 @@ func callAPI() ([]Content, error) {
 			return nil, errors.New("json mapping error")
 		}
 	}
+}
+
+func getContentURL() string {
+	l := len(DATA_SOURCES)
+
+	return DATA_SOURCES[rand.Intn(l)]
 }
 
 func getContent(url string) ([]byte, error) {
