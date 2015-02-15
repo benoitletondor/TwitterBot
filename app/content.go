@@ -33,7 +33,7 @@ func generateTweetContent() (Content, error) {
 }
 
 func callAPI() ([]Content, error) {
-	content, err := getContent(getContentURL())
+	content, err := getWebserviceContent(DATA_SOURCES[rand.Intn(len(DATA_SOURCES))])
 	if err != nil {
 		fmt.Println("Error while calling API")
 		return nil, err
@@ -121,13 +121,7 @@ func callAPI() ([]Content, error) {
 	}
 }
 
-func getContentURL() string {
-	l := len(DATA_SOURCES)
-
-	return DATA_SOURCES[rand.Intn(l)]
-}
-
-func getContent(url string) ([]byte, error) {
+func getWebserviceContent(url string) ([]byte, error) {
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

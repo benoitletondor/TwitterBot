@@ -28,7 +28,7 @@ CREATE TABLE `follow` (
   `unfollowDate` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `UserId` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +44,27 @@ CREATE TABLE `tweet` (
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Content` (`content`(255))
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `reply`
+--
+
+DROP TABLE IF EXISTS `reply`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `reply` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` BIGINT NOT NULL,
+  `userName` VARCHAR(100) NOT NULL,
+  `tweetId` BIGINT NOT NULL,
+  `status` TEXT NOT NULL,
+  `answer` TEXT NOT NULL,
+  `replyDate` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `TweetId` (`tweetId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
