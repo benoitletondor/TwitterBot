@@ -87,5 +87,5 @@ func actionTweet() {
 		return
 	}
 
-	fmt.Println("Tweet posted : ", tweet)
+	fmt.Println("Tweet posted : ", tweet.Text)
 }
