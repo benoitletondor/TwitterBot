@@ -23,8 +23,10 @@ func main() {
 	defer database.Close()
 
 	c := cron.New()
-	c.AddFunc("@every 5s", bot)
+	c.AddFunc("@every 30m", bot)
 	c.Start()
+
+	bot()
 
 	select {} // block forever
 }

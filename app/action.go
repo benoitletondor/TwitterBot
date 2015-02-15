@@ -54,6 +54,34 @@ func performAction() {
 
 func actionFollow() {
 	fmt.Println("Action follow")
+
+	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], nil)
+	if err != nil {
+		fmt.Println("Error while querying twitter API", err)
+		return
+	}
+
+	for _, tweet := range searchResult.Statuses {
+
+		follow, err := db.AlreadyFollow(tweet.User.Id)
+		if err == nil && !follow {
+
+			err := db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
+			if err != nil {
+				fmt.Println("Error while persisting follow", err)
+				return
+			}
+
+			_, err = api.FollowUser(tweet.User.ScreenName)
+			if err != nil {
+				fmt.Println("Error while following user "+tweet.User.ScreenName+" : ", err)
+			}
+
+			fmt.Println("Now follow ", tweet.User.ScreenName)
+			return
+		}
+
+	}
 }
 
 func actionRetweet() {
