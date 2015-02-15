@@ -4,14 +4,13 @@ import (
 	"./db"
 	"fmt"
 	"math/rand"
-	"net/url"
 	"strings"
 	"time"
 )
 
 const (
 	_FOLLOW   = iota
-	_RETWEET  = iota
+	_REPLY    = iota
 	_FAVORITE = iota
 	_TWEET    = iota
 )
@@ -25,7 +24,7 @@ func performAction() {
 	actions := make([]Action, 0, 4)
 
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
-	actions = append(actions, Action{name: _RETWEET, weight: ACTION_RETWEET_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _REPLY, weight: ACTION_REPLY_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_FAVORITE_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _TWEET, weight: ACTION_TWEET_WEIGHT * rand.Intn(100)})
 
@@ -41,8 +40,8 @@ func performAction() {
 	case _FOLLOW:
 		actionFollow()
 		break
-	case _RETWEET:
-		actionRetweet()
+	case _REPLY:
+		actionReply()
 		break
 	case _FAVORITE:
 		actionFavorite()
@@ -85,8 +84,40 @@ func actionFollow() {
 	}
 }
 
-func actionRetweet() {
-	fmt.Println("Action retweet")
+func actionReply() {
+	fmt.Println("Action reply")
+
+	tweets, err := api.GetMentionsTimeline(nil)
+	if err != nil {
+		fmt.Println("Error while querying twitter mention API", err)
+		return
+	}
+
+	for _, tweet := range tweets {
+
+		replied, err := db.HasAlreadyReplied(tweet.Id)
+		if err == nil && !replied && shouldReply(tweet) {
+
+			response := buildReply(tweet)
+
+			err = db.Reply{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, TweetId: tweet.Id, Status: tweet.Text, Answer: response, ReplyDate: time.Now()}.Persist()
+			if err != nil {
+				fmt.Println("Error while persisting reply", err)
+				return
+			}
+
+			respTweet, err := api.PostTweet(response, nil)
+			if err != nil {
+				fmt.Println("Error while posting reply", err)
+				return
+			}
+
+			fmt.Println("Reply posted : ", respTweet.Text)
+			return
+		}
+	}
+
+	fmt.Println("Nothing to reply found :(")
 }
 
 func actionFavorite() {
@@ -136,7 +167,7 @@ func actionTweet() {
 		return
 	}
 
-	tweet, err := api.PostTweet(tweetText, url.Values{})
+	tweet, err := api.PostTweet(tweetText, nil)
 	if err != nil {
 		fmt.Println("Error while posting tweet", err)
 		return

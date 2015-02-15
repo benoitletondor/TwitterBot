@@ -23,8 +23,10 @@ func main() {
 	defer database.Close()
 
 	c := cron.New()
-	c.AddFunc("@every 30m", bot)
+	c.AddFunc("@every 15m", bot)
 	c.Start()
+
+	fmt.Println("Hello world")
 
 	bot()
 
@@ -32,7 +34,7 @@ func main() {
 }
 
 func bot() {
-	fmt.Println("Hello world")
+	fmt.Println("Waking up!")
 
 	performAction()
 }
