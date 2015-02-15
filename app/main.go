@@ -1,15 +1,13 @@
 package main
 
 import (
+	"./db"
+	"fmt"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/robfig/cron"
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
-	"fmt"
 )
 
 var api *anaconda.TwitterApi
-var db *sql.DB
 
 func main() {
 	// Init Twitter API
@@ -17,20 +15,12 @@ func main() {
 	anaconda.SetConsumerSecret(CONSUMER_SECRET)
 	api = anaconda.NewTwitterApi(TOKEN, TOKEN_SECRET)
 
-	// Init Mysql DB
-	dbLink, err := sql.Open("mysql", MYSQL_USER+":"+MYSQL_PASSWORD+"@/"+MYSQL_SCHEMA)
+	database, err := db.Init(MYSQL_USER, MYSQL_PASSWORD, MYSQL_SCHEMA)
 	if err != nil {
-	    panic(err.Error())
+		panic(err.Error())
 	}
 
-	// Open doesn't open a connection. Validate DSN data:
-	err = dbLink.Ping()
-	if err != nil {
-	    panic(err.Error()) 
-	}
-
-	// Set up global var
-	db = dbLink
+	defer database.Close()
 
 	c := cron.New()
 	c.AddFunc("@every 5s", bot)
