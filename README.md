@@ -1,6 +1,6 @@
 # Twitter bot
 
-This is an experiment of a twitter bot made with golang. It's based on the work of the great (clementb)[https://github.com/clementb] and made with love.
+This is an experiment of a twitter bot made with golang. It's based on the work of the great [clementb](https://github.com/clementb) and made with love.
 
 The bot should do mainly 4 things :
 
