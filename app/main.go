@@ -34,7 +34,9 @@ func main() {
 }
 
 func bot() {
-	fmt.Println("Waking up!")
+	fmt.Println("----------- Waking up!")
 
 	performAction()
+
+	fmt.Println("----------- Goes to sleep")
 }
