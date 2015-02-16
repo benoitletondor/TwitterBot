@@ -2,6 +2,9 @@ package main
 
 // Rename this file conf.go and replace with actual values
 
+//const USER_NAME = "twitterName"
+//const ACTIONS_INTERVAL = "@every 30m"
+
 //const CONSUMER_KEY string = ""
 //const CONSUMER_SECRET string = ""
 //const TOKEN string = ""
