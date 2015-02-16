@@ -3,6 +3,7 @@ package main
 import (
 	"./db"
 	"fmt"
+	"github.com/kapsteur/franco"
 	"math/rand"
 	"strings"
 	"time"
@@ -62,6 +63,18 @@ func actionFollow() {
 	}
 
 	for _, tweet := range searchResult.Statuses {
+		lang := franco.DetectOne(tweet.Text)
+		userLang := franco.DetectOne(tweet.User.Description)
+
+		if lang.Code != "eng" {
+			fmt.Println("Ignoring tweet in " + lang.Code + ", not english : " + tweet.Text)
+			continue
+		}
+
+		if userLang.Code != "eng" {
+			fmt.Println("Ignoring user desc in " + userLang.Code + ", not english : " + tweet.User.Description)
+			continue
+		}
 
 		follow, err := db.AlreadyFollow(tweet.User.Id)
 		if err == nil && !follow {
@@ -133,6 +146,16 @@ func actionFavorite() {
 	for _, tweet := range searchResult.Statuses {
 		if i >= FAV_LIMIT_IN_A_ROW {
 			return
+		}
+
+		if lang.Code != "eng" {
+			fmt.Println("Ignoring tweet in " + lang.Code + ", not english : " + tweet.Text)
+			continue
+		}
+
+		if userLang.Code != "eng" {
+			fmt.Println("Ignoring user desc in " + userLang.Code + ", not english : " + tweet.User.Description)
+			continue
 		}
 
 		_, err = api.Favorite(tweet.Id)
