@@ -67,12 +67,12 @@ func isRightLanguage(tweet anaconda.Tweet) bool {
 	lang := franco.DetectOne(removeUserNames(tweet.Text))
 	userLang := franco.DetectOne(tweet.User.Description)
 
-	if lang.Code != "eng" {
+	if !stringInSlice(lang.Code, ACCEPTED_LANGUAGES) {
 		fmt.Println("Ignoring tweet in " + lang.Code + ", not english : " + tweet.Text)
 		return false
 	}
 
-	if userLang.Code != "eng" {
+	if !stringInSlice(lang.Code, ACCEPTED_LANGUAGES) {
 		fmt.Println("Ignoring user desc in " + userLang.Code + ", not english : " + tweet.User.Description)
 		return false
 	}

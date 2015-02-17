@@ -23,7 +23,7 @@ func main() {
 	defer database.Close()
 
 	c := cron.New()
-	c.AddFunc("@every 15m", bot)
+	c.AddFunc(ACTIONS_INTERVAL, bot)
 	c.Start()
 
 	fmt.Println("Hello world")

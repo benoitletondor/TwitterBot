@@ -2,6 +2,9 @@ package main
 
 // Rename this file conf.go and replace with actual values
 
+//const USER_NAME = "twitterName"
+//const ACTIONS_INTERVAL = "@every 30m"
+
 //const CONSUMER_KEY string = ""
 //const CONSUMER_SECRET string = ""
 //const TOKEN string = ""
@@ -19,3 +22,4 @@ package main
 
 //var DATA_SOURCES = [2]string{"http://api1", "http://api2"}
 //var KEYWORDS = [2]string{"key1", "key2}
+//var ACCEPTED_LANGUAGES = []string{"eng", "swe", "sco"}
