@@ -25,3 +25,5 @@ package main
 //var KEYWORDS = [2]string{"key1", "key2}
 
 //const ACCEPTED_LANGUAGE string = "en"
+
+//var BANNED_KEYWORDS = []string{"porn"}

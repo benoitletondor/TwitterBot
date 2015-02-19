@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/ChimeraCoder/anaconda"
 	"net/url"
+	"strings"
 )
 
 func stringInSlice(a string, list []string) bool {
@@ -29,4 +31,22 @@ func isUserFollowing(userName string) (bool, error) {
 	}
 
 	return following, nil
+}
+
+func isUserAcceptable(tweet anaconda.Tweet) bool {
+	words := strings.Split(tweet.Text, " ")
+	for _, word := range words {
+		if stringInSlice(strings.ToLower(word), BANNED_KEYWORDS) {
+			return false
+		}
+	}
+
+	words = strings.Split(tweet.User.Description, " ")
+	for _, word := range words {
+		if stringInSlice(strings.ToLower(word), BANNED_KEYWORDS) {
+			return false
+		}
+	}
+
+	return true
 }
