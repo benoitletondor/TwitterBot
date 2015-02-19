@@ -67,6 +67,11 @@ func actionFollow() {
 
 	for _, tweet := range searchResult.Statuses {
 
+		if !isUserAcceptable(tweet) {
+			fmt.Println("Ignoring user for follow : @" + tweet.User.ScreenName)
+			continue
+		}
+
 		follow, err := db.AlreadyFollow(tweet.User.Id)
 		if err == nil && !follow {
 
@@ -133,6 +138,8 @@ func actionUnfollow() {
 			fmt.Println("Error while querying API to unfollow @"+follow.UserName, err)
 			return
 		}
+
+		fmt.Println("Unfollowed @" + follow.UserName)
 	}
 }
 
@@ -152,6 +159,11 @@ func actionFavorite() {
 	for _, tweet := range searchResult.Statuses {
 		if i >= FAV_LIMIT_IN_A_ROW {
 			return
+		}
+
+		if !isUserAcceptable(tweet) {
+			fmt.Println("Ignoring user for favorite : @" + tweet.User.ScreenName)
+			continue
 		}
 
 		_, err = api.Favorite(tweet.Id)
