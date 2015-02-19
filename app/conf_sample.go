@@ -22,4 +22,5 @@ package main
 
 //var DATA_SOURCES = [2]string{"http://api1", "http://api2"}
 //var KEYWORDS = [2]string{"key1", "key2}
-//var ACCEPTED_LANGUAGES = []string{"eng", "swe", "sco"}
+
+//const ACCEPTED_LANGUAGE string = "en"

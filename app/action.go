@@ -4,6 +4,7 @@ import (
 	"./db"
 	"fmt"
 	"math/rand"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -55,16 +56,16 @@ func performAction() {
 func actionFollow() {
 	fmt.Println("Action follow")
 
-	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], nil)
+	v := url.Values{}
+	v.Add("lang", ACCEPTED_LANGUAGE)
+
+	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], v)
 	if err != nil {
 		fmt.Println("Error while querying twitter API", err)
 		return
 	}
 
 	for _, tweet := range searchResult.Statuses {
-		if !isRightLanguage(tweet) {
-			continue
-		}
 
 		follow, err := db.AlreadyFollow(tweet.User.Id)
 		if err == nil && !follow {
@@ -90,43 +91,15 @@ func actionFollow() {
 func actionReply() {
 	fmt.Println("Action reply")
 
-	tweets, err := api.GetMentionsTimeline(nil)
-	if err != nil {
-		fmt.Println("Error while querying twitter mention API", err)
-		return
-	}
-
-	for _, tweet := range tweets {
-
-		replied, err := db.HasAlreadyReplied(tweet.Id)
-		if err == nil && !replied && shouldReply(tweet) {
-
-			response := buildReply(tweet)
-
-			err = db.Reply{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, TweetId: tweet.Id, Status: tweet.Text, Answer: response, ReplyDate: time.Now()}.Persist()
-			if err != nil {
-				fmt.Println("Error while persisting reply", err)
-				return
-			}
-
-			respTweet, err := api.PostTweet(response, nil)
-			if err != nil {
-				fmt.Println("Error while posting reply", err)
-				return
-			}
-
-			fmt.Println("Reply posted : ", respTweet.Text)
-			return
-		}
-	}
-
-	fmt.Println("Nothing to reply found :(")
 }
 
 func actionFavorite() {
 	fmt.Println("Action fav")
 
-	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], nil)
+	v := url.Values{}
+	v.Add("lang", ACCEPTED_LANGUAGE)
+
+	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], v)
 	if err != nil {
 		fmt.Println("Error while querying twitter API", err)
 		return
@@ -136,10 +109,6 @@ func actionFavorite() {
 	for _, tweet := range searchResult.Statuses {
 		if i >= FAV_LIMIT_IN_A_ROW {
 			return
-		}
-
-		if !isRightLanguage(tweet) {
-			continue
 		}
 
 		_, err = api.Favorite(tweet.Id)
