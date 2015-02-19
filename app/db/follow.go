@@ -1,6 +1,8 @@
 package db
 
 import (
+	"database/sql"
+	"github.com/go-sql-driver/mysql"
 	"time"
 )
 
@@ -11,6 +13,7 @@ type Follow struct {
 	Status       string
 	FollowDate   time.Time
 	UnfollowDate time.Time
+	LastAction   time.Time
 }
 
 const (
@@ -36,13 +39,77 @@ func AlreadyFollow(userId int64) (bool, error) {
 }
 
 func (follow Follow) Persist() error {
-	stmtIns, err := database.Prepare("INSERT INTO " + _TABLE_FOLLOW + "(userId, userName, status, followDate) VALUES( ?, ?, ?,? )")
+	var stmtIns *sql.Stmt
+	var err error
+
+	if follow.id == 0 {
+		stmtIns, err = database.Prepare("INSERT INTO " + _TABLE_FOLLOW + "(userId, userName, status, followDate, unfollowDate, lastAction) VALUES( ?, ?, ?, ?, ? ,?)")
+	} else {
+		stmtIns, err = database.Prepare("UPDATE " + _TABLE_FOLLOW + " SET userId = ?, userName = ?, status = ?, followDate = ?, unfollowDate = ?, lastAction = ? WHERE id = ?")
+	}
+
 	if err != nil {
 		return err
 	}
 
 	defer stmtIns.Close()
 
-	_, err = stmtIns.Exec(follow.UserId, follow.UserName, follow.Status, follow.FollowDate)
+	if follow.id == 0 {
+		_, err = stmtIns.Exec(follow.UserId, follow.UserName, follow.Status, follow.FollowDate, follow.UnfollowDate, time.Now())
+	} else {
+		_, err = stmtIns.Exec(follow.UserId, follow.UserName, follow.Status, follow.FollowDate, follow.UnfollowDate, follow.LastAction, follow.id)
+	}
+
 	return err
+}
+
+func GetNotUnfollowed(maxFollowDate time.Time, limit int) ([]Follow, error) {
+	follows := make([]Follow, 0)
+
+	stmtOut, err := database.Prepare("SELECT * FROM " + _TABLE_FOLLOW + " WHERE unfollowDate IS NULL AND followDate <= ? ORDER BY lastAction LIMIT ?")
+	if err != nil {
+		return follows, err
+	}
+
+	defer stmtOut.Close()
+
+	rows, err := stmtOut.Query(maxFollowDate, limit)
+	if err != nil {
+		return follows, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		follow, err := mapFollow(rows)
+		if err != nil {
+			return follows, err
+		}
+
+		follows = append(follows, follow)
+	}
+
+	return follows, nil
+}
+
+func mapFollow(rows *sql.Rows) (Follow, error) {
+	var id int
+	var userId int64
+	var userName string
+	var status string
+	var followDate time.Time
+	var unfollowDate mysql.NullTime
+	var lastAction time.Time
+
+	err := rows.Scan(&id, &userId, &userName, &status, &followDate, &unfollowDate, &lastAction)
+	if err != nil {
+		return Follow{}, err
+	}
+
+	var unfollowTime time.Time
+	if unfollowDate.Valid {
+		unfollowTime = unfollowDate.Time
+	}
+
+	return Follow{id: id, UserId: userId, UserName: userName, Status: status, FollowDate: followDate, UnfollowDate: unfollowTime, LastAction: lastAction}, nil
 }

@@ -26,9 +26,10 @@ CREATE TABLE `follow` (
   `status` text,
   `followDate` datetime NOT NULL,
   `unfollowDate` datetime DEFAULT NULL,
+  `lastAction` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `UserId` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,7 +45,7 @@ CREATE TABLE `tweet` (
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Content` (`content`(255))
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -64,7 +65,7 @@ CREATE TABLE `reply` (
   `replyDate` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   KEY `TweetId` (`tweetId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

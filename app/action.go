@@ -11,7 +11,7 @@ import (
 
 const (
 	_FOLLOW   = iota
-	_REPLY    = iota
+	_UNFOLLOW = iota
 	_FAVORITE = iota
 	_TWEET    = iota
 )
@@ -25,7 +25,7 @@ func performAction() {
 	actions := make([]Action, 0, 4)
 
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
-	actions = append(actions, Action{name: _REPLY, weight: ACTION_REPLY_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_UNFOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_FAVORITE_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _TWEET, weight: ACTION_TWEET_WEIGHT * rand.Intn(100)})
 
@@ -41,8 +41,8 @@ func performAction() {
 	case _FOLLOW:
 		actionFollow()
 		break
-	case _REPLY:
-		actionReply()
+	case _UNFOLLOW:
+		actionUnfollow()
 		break
 	case _FAVORITE:
 		actionFavorite()
@@ -88,9 +88,52 @@ func actionFollow() {
 	}
 }
 
-func actionReply() {
-	fmt.Println("Action reply")
+func actionUnfollow() {
+	fmt.Println("Action unfollow")
 
+	date := time.Now()
+	duration, err := time.ParseDuration("-168h") // -1 week
+	date = date.Add(duration)
+
+	follows, err := db.GetNotUnfollowed(date, UNFOLLOW_LIMIT_IN_A_ROW)
+	if err != nil {
+		fmt.Println("Error while querying db to find people to unfollow", err)
+		return
+	}
+
+	for _, follow := range follows {
+		follow.LastAction = time.Now()
+
+		isFollowing, err := isUserFollowing(follow.UserName)
+		if err != nil {
+			fmt.Println("Error while querying API for friendships", err)
+			return
+		}
+
+		if isFollowing {
+			err = follow.Persist()
+			if err != nil {
+				fmt.Println("Error while persisting follow", err)
+				return
+			}
+
+			continue
+		}
+
+		follow.UnfollowDate = time.Now()
+
+		err = follow.Persist()
+		if err != nil {
+			fmt.Println("Error while persisting follow", err)
+			return
+		}
+
+		_, err = api.UnfollowUser(follow.UserName)
+		if err != nil {
+			fmt.Println("Error while querying API to unfollow @"+follow.UserName, err)
+			return
+		}
+	}
 }
 
 func actionFavorite() {

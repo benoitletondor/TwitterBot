@@ -11,10 +11,11 @@ package main
 //const TOKEN_SECRET string = ""
 
 //const ACTION_FOLLOW_WEIGHT int = 1
-//const ACTION_REPLY_WEIGHT int = 1
+//const ACTION_UNFOLLOW_WEIGHT int = 1
 //const ACTION_FAVORITE_WEIGHT int = 1
 //const ACTION_TWEET_WEIGHT int = 1
 //const FAV_LIMIT_IN_A_ROW int = 5
+//const UNFOLLOW_LIMIT_IN_A_ROW int = 5
 
 //const MYSQL_USER string = ""
 //const MYSQL_PASSWORD string = ""
