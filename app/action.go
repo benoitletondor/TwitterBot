@@ -95,7 +95,7 @@ func actionUnfollow() {
 	fmt.Println("Action unfollow")
 
 	date := time.Now()
-	duration, err := time.ParseDuration("-168h") // -1 week
+	duration, err := time.ParseDuration("-72") // -3 days
 	date = date.Add(duration)
 
 	follows, err := db.GetNotUnfollowed(date, UNFOLLOW_LIMIT_IN_A_ROW)
