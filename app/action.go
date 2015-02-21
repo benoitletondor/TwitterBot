@@ -4,7 +4,6 @@ import (
 	"./db"
 	"fmt"
 	"math/rand"
-	"net/url"
 	"strings"
 	"time"
 )
@@ -56,10 +55,9 @@ func performAction() {
 func actionFollow() {
 	fmt.Println("Action follow")
 
-	v := url.Values{}
-	v.Add("lang", ACCEPTED_LANGUAGE)
+	search, v := generateAPISearchValues(KEYWORDS[rand.Intn(len(KEYWORDS))])
 
-	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], v)
+	searchResult, err := api.GetSearch(search, v)
 	if err != nil {
 		fmt.Println("Error while querying twitter API", err)
 		return
@@ -146,10 +144,9 @@ func actionUnfollow() {
 func actionFavorite() {
 	fmt.Println("Action fav")
 
-	v := url.Values{}
-	v.Add("lang", ACCEPTED_LANGUAGE)
+	search, v := generateAPISearchValues(KEYWORDS[rand.Intn(len(KEYWORDS))])
 
-	searchResult, err := api.GetSearch(KEYWORDS[rand.Intn(len(KEYWORDS))], v)
+	searchResult, err := api.GetSearch(search, v)
 	if err != nil {
 		fmt.Println("Error while querying twitter API", err)
 		return
