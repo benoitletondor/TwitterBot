@@ -54,10 +54,12 @@ func (follow Follow) Persist() error {
 
 	defer stmtIns.Close()
 
+	unfollowDate := mysql.NullTime{Time: follow.UnfollowDate, Valid: !follow.UnfollowDate.IsZero()}
+
 	if follow.id == 0 {
-		_, err = stmtIns.Exec(follow.UserId, follow.UserName, follow.Status, follow.FollowDate, follow.UnfollowDate, time.Now())
+		_, err = stmtIns.Exec(follow.UserId, follow.UserName, follow.Status, follow.FollowDate, unfollowDate, time.Now())
 	} else {
-		_, err = stmtIns.Exec(follow.UserId, follow.UserName, follow.Status, follow.FollowDate, follow.UnfollowDate, follow.LastAction, follow.id)
+		_, err = stmtIns.Exec(follow.UserId, follow.UserName, follow.Status, follow.FollowDate, unfollowDate, follow.LastAction, follow.id)
 	}
 
 	return err
