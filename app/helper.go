@@ -41,6 +41,10 @@ func isUserAcceptable(tweet anaconda.Tweet) bool {
 		}
 	}
 
+	if tweet.User.Description == "" {
+		return false
+	}
+
 	words = strings.Split(tweet.User.Description, " ")
 	for _, word := range words {
 		if stringInSlice(strings.ToLower(word), BANNED_KEYWORDS) {
@@ -49,4 +53,17 @@ func isUserAcceptable(tweet anaconda.Tweet) bool {
 	}
 
 	return true
+}
+
+func generateAPISearchValues(word string) (string, url.Values) {
+	searchString := word
+
+	for _, word := range BANNED_KEYWORDS {
+		searchString += " -" + word
+	}
+
+	v := url.Values{}
+	v.Add("lang", ACCEPTED_LANGUAGE)
+
+	return url.QueryEscape(searchString), v
 }
