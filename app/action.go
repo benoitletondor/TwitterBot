@@ -13,6 +13,7 @@ const (
 	_UNFOLLOW = iota
 	_FAVORITE = iota
 	_TWEET    = iota
+	_REPLY    = iota
 )
 
 type Action struct {
@@ -21,12 +22,13 @@ type Action struct {
 }
 
 func performAction() {
-	actions := make([]Action, 0, 4)
+	actions := make([]Action, 0, 5)
 
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_UNFOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_FAVORITE_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _TWEET, weight: ACTION_TWEET_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _REPLY, weight: ACTION_REPLY_WEIGHT * rand.Intn(100)})
 
 	selectedAction := Action{name: -1, weight: -1}
 
@@ -48,6 +50,9 @@ func performAction() {
 		break
 	case _TWEET:
 		actionTweet()
+		break
+	case _REPLY:
+		actionReply()
 		break
 	}
 }
@@ -202,4 +207,50 @@ func actionTweet() {
 	}
 
 	fmt.Println("Tweet posted : ", tweet.Text)
+}
+
+func actionReply() {
+	fmt.Println("Action reply")
+
+	tweets, err := api.GetMentionsTimeline(nil)
+	if err != nil {
+		fmt.Println("Error while querying twitter mention API", err)
+		return
+	}
+
+	for _, tweet := range tweets {
+
+		replied, err := db.HasAlreadyReplied(tweet.Id)
+		if err == nil && !replied {
+			fmt.Println("Building reply for tweet : " + tweet.Text)
+
+			response, err := buildReply(tweet)
+			if err != nil {
+				fmt.Println("Error while building reply", err)
+				return
+			}
+
+			err = db.Reply{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, TweetId: tweet.Id, Status: tweet.Text, Answer: response, ReplyDate: time.Now()}.Persist()
+			if err != nil {
+				fmt.Println("Error while persisting reply", err)
+				return
+			}
+
+			if response != "" {
+				respTweet, err := api.PostTweet(response, nil)
+				if err != nil {
+					fmt.Println("Error while posting reply", err)
+					return
+				}
+
+				fmt.Println("Reply posted : ", respTweet.Text)
+			} else {
+				fmt.Println("No response found for tweet : " + tweet.Text)
+			}
+
+			return
+		}
+	}
+
+	fmt.Println("Nothing to reply found :(")
 }

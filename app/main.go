@@ -4,10 +4,14 @@ import (
 	"./db"
 	"fmt"
 	"github.com/ChimeraCoder/anaconda"
+	"github.com/jsgoecke/go-wit"
 	"github.com/robfig/cron"
+	"math/rand"
+	"time"
 )
 
 var api *anaconda.TwitterApi
+var witclient *wit.Client
 
 func main() {
 	// Init Twitter API
@@ -22,9 +26,16 @@ func main() {
 
 	defer database.Close()
 
+	// Init WIT api
+	witclient = wit.NewClient(WIT_ACCESS_TOKEN)
+
+	// Init cron
 	c := cron.New()
 	c.AddFunc(ACTIONS_INTERVAL, bot)
 	c.Start()
+
+	// Init random
+	rand.Seed(time.Now().UnixNano())
 
 	fmt.Println("Hello world")
 
