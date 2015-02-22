@@ -230,9 +230,6 @@ func actionReply() {
 				return
 			}
 
-			fmt.Println("About to answer : " + response)
-			return
-
 			err = db.Reply{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, TweetId: tweet.Id, Status: tweet.Text, Answer: response, ReplyDate: time.Now()}.Persist()
 			if err != nil {
 				fmt.Println("Error while persisting reply", err)
