@@ -91,9 +91,15 @@ func cleanTweetMessage(message string) string {
 
 	words := strings.Split(message, " ")
 	for _, word := range words {
-		if !strings.HasPrefix(word, "@") && !strings.HasPrefix(word, "#") {
-			cleaned += word + " "
+		if strings.HasPrefix(word, "@") {
+			continue
+		} else if strings.HasPrefix(word, "#") {
+			cleaned += strings.TrimPrefix(word, "#") + " "
+		} else if strings.HasPrefix(word, "http") {
+			continue
 		}
+
+		cleaned += word + " "
 	}
 
 	return cleaned
