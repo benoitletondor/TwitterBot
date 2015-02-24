@@ -11,8 +11,9 @@ import (
 )
 
 type Content struct {
-	text string
-	url  string
+	text     string
+	url      string
+	hashtags string
 }
 
 func generateTweetContent() (Content, error) {
@@ -25,11 +26,26 @@ func generateTweetContent() (Content, error) {
 		tweetExists, err := db.HasTweetWithContent(content.text + " " + content.url)
 
 		if err == nil && !tweetExists {
-			return content, nil
+			return addHashTags(content), nil
 		}
 	}
 
 	return Content{}, errors.New("No tweet content found")
+}
+
+func addHashTags(content Content) Content {
+	margin := 140 - T_CO_URL_LENGTH - len(content.text) - 1 // -1 for the space between link and text
+
+	for _, hashtag := range HASHTAGS {
+		if margin-len(hashtag)-2 < 0 { // -2 = the space before the new hashtag and the #
+			return content
+		}
+
+		margin -= len(hashtag) + 2
+		content.hashtags = content.hashtags + " #" + hashtag
+	}
+
+	return content
 }
 
 func callAPI() ([]Content, error) {

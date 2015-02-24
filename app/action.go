@@ -192,7 +192,7 @@ func actionTweet() {
 		return
 	}
 
-	tweetText := content.text + " " + content.url
+	tweetText := content.text + " " + content.url + content.hashtags
 
 	err = db.Tweet{Content: tweetText, Date: time.Now()}.Persist()
 	if err != nil {
