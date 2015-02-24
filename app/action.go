@@ -4,6 +4,7 @@ import (
 	"./db"
 	"fmt"
 	"math/rand"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -237,7 +238,10 @@ func actionReply() {
 			}
 
 			if response != "" {
-				respTweet, err := api.PostTweet(response, nil)
+				v := url.Values{}
+				v.Add("in_reply_to_status_id", tweet.Id)
+
+				respTweet, err := api.PostTweet(response, v)
 				if err != nil {
 					fmt.Println("Error while posting reply", err)
 					return
