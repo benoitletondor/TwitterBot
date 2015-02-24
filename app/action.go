@@ -4,6 +4,8 @@ import (
 	"./db"
 	"fmt"
 	"math/rand"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -192,7 +194,7 @@ func actionTweet() {
 		return
 	}
 
-	tweetText := content.text + " " + content.url
+	tweetText := content.text + " " + content.url + content.hashtags
 
 	err = db.Tweet{Content: tweetText, Date: time.Now()}.Persist()
 	if err != nil {
@@ -237,7 +239,10 @@ func actionReply() {
 			}
 
 			if response != "" {
-				respTweet, err := api.PostTweet(response, nil)
+				v := url.Values{}
+				v.Add("in_reply_to_status_id", strconv.FormatInt(tweet.Id, 10))
+
+				respTweet, err := api.PostTweet(response, v)
 				if err != nil {
 					fmt.Println("Error while posting reply", err)
 					return

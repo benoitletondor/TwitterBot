@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+const (
+	INTENT_HI           = "hi"
+	INTENT_NICE_ARTICLE = "nice_article"
+	INTENT_THANK_FOLLOW = "thank_follow"
+)
+
 func buildReply(tweet anaconda.Tweet) (string, error) {
 	message := cleanTweetMessage(tweet.Text)
 	if message == "" {
@@ -29,11 +35,11 @@ func buildReply(tweet anaconda.Tweet) (string, error) {
 		return "", nil
 	}
 
-	if intent == "hi" {
+	if intent == INTENT_HI {
 		return buildHiIntentResponse(tweet), nil
-	} else if intent == "nice_article" {
+	} else if intent == INTENT_NICE_ARTICLE {
 		return buildNiceArticleIntentResponse(tweet), nil
-	} else if intent == "thank_follow" {
+	} else if intent == INTENT_THANK_FOLLOW {
 		return buildThanksFollowIntentResponse(tweet), nil
 	}
 
@@ -91,9 +97,13 @@ func cleanTweetMessage(message string) string {
 
 	words := strings.Split(message, " ")
 	for _, word := range words {
-		if !strings.HasPrefix(word, "@") && !strings.HasPrefix(word, "#") {
-			cleaned += word + " "
+		if strings.HasPrefix(word, "@") || strings.HasPrefix(word, "http") {
+			continue
+		} else if strings.HasPrefix(word, "#") {
+			cleaned += strings.TrimPrefix(word, "#") + " "
 		}
+
+		cleaned += word + " "
 	}
 
 	return cleaned

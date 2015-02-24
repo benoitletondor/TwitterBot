@@ -20,12 +20,15 @@ package main
 //const FAV_LIMIT_IN_A_ROW int = 5
 //const UNFOLLOW_LIMIT_IN_A_ROW int = 5
 
+//const T_CO_URL_LENGTH = 25
+
 //const MYSQL_USER string = ""
 //const MYSQL_PASSWORD string = ""
 //const MYSQL_SCHEMA string = ""
 
 //var DATA_SOURCES = []string{"http://api1", "http://api2"}
 //var KEYWORDS = []string{"key1", "key2}
+//var HASHTAGS = []string{"hash1", "hash2"}
 
 //const ACCEPTED_LANGUAGE string = "en"
 
