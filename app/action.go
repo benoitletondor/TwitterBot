@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -239,7 +240,7 @@ func actionReply() {
 
 			if response != "" {
 				v := url.Values{}
-				v.Add("in_reply_to_status_id", tweet.Id)
+				v.Add("in_reply_to_status_id", strconv.FormatInt(tweet.Id, 10))
 
 				respTweet, err := api.PostTweet(response, v)
 				if err != nil {
