@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sort"
+	"time"
 )
 
 type Content struct {
@@ -63,6 +64,34 @@ func addHashTags(content Content) Content {
 	}
 
 	return content
+}
+
+func hasReachDailyTweetLimit() (bool, error) {
+	var from time.Time
+	var to time.Time
+
+	now := time.Now()
+
+	if now.Hour() >= WAKE_UP_HOUR {
+		from = time.Date(now.Year(), now.Month(), now.Day(), WAKE_UP_HOUR, 0, 0, 0, now.Location())
+	} else {
+		yesterday := now.Add(-time.Duration(24) * time.Hour)
+		from = time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), WAKE_UP_HOUR, 0, 0, 0, yesterday.Location())
+	}
+
+	if now.Hour() < GO_TO_BED_HOUR {
+		to = time.Date(now.Year(), now.Month(), now.Day(), GO_TO_BED_HOUR, 0, 0, 0, now.Location())
+	} else {
+		tomorrow := now.Add(time.Duration(24) * time.Hour)
+		to = time.Date(tomorrow.Year(), tomorrow.Month(), tomorrow.Day(), GO_TO_BED_HOUR, 0, 0, 0, tomorrow.Location())
+	}
+
+	count, err := db.GetNumberOfTweetsBetweenDates(from, to)
+	if err != nil {
+		return true, err
+	}
+
+	return count >= MAX_TWEET_IN_A_DAY, nil
 }
 
 func callAPI() ([]Content, error) {

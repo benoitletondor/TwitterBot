@@ -36,10 +36,28 @@ func HasTweetWithContent(content string) (bool, error) {
 
 	var size int
 
-	err = stmtOut.QueryRow(content+"%").Scan(&size)
+	err = stmtOut.QueryRow(content + "%").Scan(&size)
 	if err != nil {
 		return true, err
 	}
 
 	return size > 0, nil
+}
+
+func GetNumberOfTweetsBetweenDates(from time.Time, to time.Time) (int, error) {
+	stmtOut, err := database.Prepare("SELECT count(*) FROM " + _TABLE_TWEET + " WHERE date >= ? AND date <= ? LIMIT 1")
+	if err != nil {
+		return 0, err
+	}
+
+	defer stmtOut.Close()
+
+	var size int
+
+	err = stmtOut.QueryRow(from, to).Scan(&size)
+	if err != nil {
+		return 0, err
+	}
+
+	return size, nil
 }

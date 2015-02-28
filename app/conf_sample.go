@@ -21,6 +21,7 @@ package main
 //const ACTION_REPLY_WEIGHT int = 1
 //const FAV_LIMIT_IN_A_ROW int = 5
 //const UNFOLLOW_LIMIT_IN_A_ROW int = 5
+//const MAX_TWEET_IN_A_DAY int = 5
 
 //const T_CO_URL_LENGTH = 25
 
