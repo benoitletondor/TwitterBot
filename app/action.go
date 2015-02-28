@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"net/url"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -74,6 +73,16 @@ func actionFollow() {
 
 		if !isUserAcceptable(tweet) {
 			fmt.Println("Ignoring user for follow : @" + tweet.User.ScreenName)
+			continue
+		}
+
+		if isMentionOrRT(tweet) {
+			fmt.Println("Ignoring tweet for follow, mention or RT")
+			continue
+		}
+
+		if isMe(tweet) {
+			fmt.Println("Ignoring my own tweet for follow")
 			continue
 		}
 
@@ -170,7 +179,26 @@ func actionFavorite() {
 			continue
 		}
 
-		_, err = api.Favorite(tweet.Id)
+		if isMentionOrRT(tweet) {
+			fmt.Println("Ignoring tweet for favorite, mention or RT")
+			continue
+		}
+
+		if isMe(tweet) {
+			fmt.Println("Ignoring my own tweet for favorite")
+			continue
+		}
+
+		follow, err := db.AlreadyFollow(tweet.User.Id)
+		if err == nil && follow {
+			fmt.Println("Ignoring tweet for favorite, already follow @" + tweet.User.ScreenName)
+			continue
+		}
+
+		fmt.Println("About to fav : @" + tweet.User.ScreenName + " : " + tweet.Text)
+		fmt.Println("---")
+
+		/*_, err = api.Favorite(tweet.Id)
 		if err != nil {
 			if strings.Contains(err.Error(), "139") { // Case of an already favorited tweet
 				continue
@@ -181,7 +209,7 @@ func actionFavorite() {
 			fmt.Println("Just favorited tweet : ", tweet.Text)
 		}
 
-		i++
+		i++*/
 	}
 }
 
