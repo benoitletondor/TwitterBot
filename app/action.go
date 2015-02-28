@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -195,10 +196,7 @@ func actionFavorite() {
 			continue
 		}
 
-		fmt.Println("About to fav : @" + tweet.User.ScreenName + " : " + tweet.Text)
-		fmt.Println("---")
-
-		/*_, err = api.Favorite(tweet.Id)
+		_, err = api.Favorite(tweet.Id)
 		if err != nil {
 			if strings.Contains(err.Error(), "139") { // Case of an already favorited tweet
 				continue
@@ -209,7 +207,7 @@ func actionFavorite() {
 			fmt.Println("Just favorited tweet : ", tweet.Text)
 		}
 
-		i++*/
+		i++
 	}
 }
 
