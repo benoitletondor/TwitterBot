@@ -48,7 +48,7 @@ func bot() {
 	fmt.Println("----------- Waking up!")
 
 	hour := time.Now().Hour()
-	if hour >= WAKE_UP_HOUR && hour < GO_TO_BED_HOUR {
+	if hour >= WAKE_UP_HOUR || hour < GO_TO_BED_HOUR {
 		performAction()
 	} else {
 		fmt.Println("zZzzZz")
