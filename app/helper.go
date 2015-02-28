@@ -64,6 +64,15 @@ func generateAPISearchValues(word string) (string, url.Values) {
 
 	v := url.Values{}
 	v.Add("lang", ACCEPTED_LANGUAGE)
+	v.Add("count", "50")
 
 	return url.QueryEscape(searchString), v
+}
+
+func isMentionOrRT(tweet anaconda.Tweet) bool {
+	return strings.HasPrefix(tweet.Text, "RT") || strings.HasPrefix(tweet.Text, "@")
+}
+
+func isMe(tweet anaconda.Tweet) bool {
+	return strings.ToLower(tweet.User.ScreenName) == strings.ToLower(USER_NAME)
 }

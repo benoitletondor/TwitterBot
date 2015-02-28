@@ -27,7 +27,7 @@ func (tweet Tweet) Persist() error {
 }
 
 func HasTweetWithContent(content string) (bool, error) {
-	stmtOut, err := database.Prepare("SELECT count(*) FROM " + _TABLE_TWEET + " WHERE content = ? LIMIT 1")
+	stmtOut, err := database.Prepare("SELECT count(*) FROM " + _TABLE_TWEET + " WHERE content LIKE ? LIMIT 1")
 	if err != nil {
 		return true, err
 	}
@@ -36,7 +36,7 @@ func HasTweetWithContent(content string) (bool, error) {
 
 	var size int
 
-	err = stmtOut.QueryRow(content).Scan(&size)
+	err = stmtOut.QueryRow(content+"%").Scan(&size)
 	if err != nil {
 		return true, err
 	}

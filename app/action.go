@@ -77,6 +77,16 @@ func actionFollow() {
 			continue
 		}
 
+		if isMentionOrRT(tweet) {
+			fmt.Println("Ignoring tweet for follow, mention or RT")
+			continue
+		}
+
+		if isMe(tweet) {
+			fmt.Println("Ignoring my own tweet for follow")
+			continue
+		}
+
 		follow, err := db.AlreadyFollow(tweet.User.Id)
 		if err == nil && !follow {
 
@@ -167,6 +177,22 @@ func actionFavorite() {
 
 		if !isUserAcceptable(tweet) {
 			fmt.Println("Ignoring user for favorite : @" + tweet.User.ScreenName)
+			continue
+		}
+
+		if isMentionOrRT(tweet) {
+			fmt.Println("Ignoring tweet for favorite, mention or RT")
+			continue
+		}
+
+		if isMe(tweet) {
+			fmt.Println("Ignoring my own tweet for favorite")
+			continue
+		}
+
+		follow, err := db.AlreadyFollow(tweet.User.Id)
+		if err == nil && follow {
+			fmt.Println("Ignoring tweet for favorite, already follow @" + tweet.User.ScreenName)
 			continue
 		}
 

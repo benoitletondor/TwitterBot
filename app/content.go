@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"sort"
 )
 
 type Content struct {
@@ -33,10 +34,26 @@ func generateTweetContent() (Content, error) {
 	return Content{}, errors.New("No tweet content found")
 }
 
+type ByRandom []string
+
+func (a ByRandom) Len() int           { return len(a) }
+func (a ByRandom) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByRandom) Less(i, j int) bool { return rand.Intn(2) > 0 }
+
 func addHashTags(content Content) Content {
+	numberOfTags := rand.Intn(4) // Max 3 hashtags
+	tags := make([]string, len(HASHTAGS))
+	copy(tags, HASHTAGS)
+
+	sort.Sort(ByRandom(tags))
+
 	margin := 140 - T_CO_URL_LENGTH - len(content.text) - 1 // -1 for the space between link and text
 
-	for _, hashtag := range HASHTAGS {
+	for i, hashtag := range tags {
+		if i >= numberOfTags {
+			return content
+		}
+
 		if margin-len(hashtag)-2 < 0 { // -2 = the space before the new hashtag and the #
 			return content
 		}

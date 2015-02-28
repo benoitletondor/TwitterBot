@@ -4,6 +4,8 @@ package main
 
 //const USER_NAME = "twitterName"
 //const ACTIONS_INTERVAL = "@every 30m"
+//const WAKE_UP_HOUR int = 16
+//const GO_TO_BED_HOUR int = 8
 
 //const CONSUMER_KEY string = ""
 //const CONSUMER_SECRET string = ""
