@@ -214,6 +214,17 @@ func actionFavorite() {
 func actionTweet() {
 	fmt.Println("Action tweet")
 
+	hasReachLimit, err := hasReachDailyTweetLimit()
+	if err != nil {
+		fmt.Println("Error while getting daily limit reached", err)
+		return
+	}
+
+	if hasReachLimit {
+		fmt.Println("Day tweet limit reached, abording")
+		return
+	}
+
 	content, err := generateTweetContent()
 	if err != nil {
 		fmt.Println("Error while getting tweet content : ", err)
