@@ -1,5 +1,5 @@
 CREATE TABLE `favorite` (
-  `idfavorite` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `userId` INT NOT NULL,
   `userName` VARCHAR(100) NOT NULL,
   `tweetId` INT NOT NULL,

@@ -28,7 +28,7 @@ func (fav Favorite) Persist() error {
 	if fav.id == 0 {
 		stmtIns, err = database.Prepare("INSERT INTO " + _TABLE_FAVORITE + "(userId, userName, tweetId, status, favDate, unfavDate, lastAction) VALUES( ?, ?, ?, ?, ?, ?, ?)")
 	} else {
-		stmtIns, err = database.Prepare("UPDATE " + _TABLE_FAVORITE + " SET userId = ?, userName = ?, tweetId = ?, status = ?, favDate = ?, unfavDate = ?, lastAction = ?) WHERE id = ?")
+		stmtIns, err = database.Prepare("UPDATE " + _TABLE_FAVORITE + " SET userId = ?, userName = ?, tweetId = ?, status = ?, favDate = ?, unfavDate = ?, lastAction = ? WHERE id = ?")
 	}
 
 	if err != nil {

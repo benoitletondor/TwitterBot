@@ -134,7 +134,7 @@ func actionUnfollow() {
 	fmt.Println("Action unfollow")
 
 	date := time.Now()
-	duration, err := time.ParseDuration("-72") // -3 days
+	duration, err := time.ParseDuration("-72h") // -3 days
 	date = date.Add(duration)
 
 	follows, err := db.GetNotUnfollowed(date, UNFOLLOW_LIMIT_IN_A_ROW)
@@ -254,8 +254,10 @@ func actionUnfavorite() {
 	fmt.Println("Action unfavorite")
 
 	date := time.Now()
-	duration, err := time.ParseDuration("-72") // -3 days
+	duration, err := time.ParseDuration("-72h") // -3 days
 	date = date.Add(duration)
+
+	fmt.Println("date : ", date)
 
 	favs, err := db.GetNotUnfavorite(date, UNFAVORITE_LIMIT_IN_A_ROW)
 	if err != nil {
