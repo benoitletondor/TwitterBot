@@ -25,7 +25,7 @@ type Action struct {
 }
 
 func performDailyAction() {
-	actions := make([]Action, 0, 5)
+	actions := make([]Action, 0, 6)
 
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_UNFOLLOW_WEIGHT * rand.Intn(100)})
@@ -38,7 +38,7 @@ func performDailyAction() {
 }
 
 func performNightlyAction() {
-	actions := make([]Action, 0, 5)
+	actions := make([]Action, 0, 6)
 
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_NIGHTLY_FOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_NIGHTLY_UNFOLLOW_WEIGHT * rand.Intn(100)})
