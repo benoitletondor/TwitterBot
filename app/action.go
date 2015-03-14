@@ -257,8 +257,6 @@ func actionUnfavorite() {
 	duration, err := time.ParseDuration("-72h") // -3 days
 	date = date.Add(duration)
 
-	fmt.Println("date : ", date)
-
 	favs, err := db.GetNotUnfavorite(date, UNFAVORITE_LIMIT_IN_A_ROW)
 	if err != nil {
 		fmt.Println("Error while querying db to find tweet to unfav", err)

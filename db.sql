@@ -77,9 +77,9 @@ DROP TABLE IF EXISTS `favorite`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `favorite` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `userId` INT NOT NULL,
+  `userId` BIGINT NOT NULL,
   `userName` VARCHAR(100) NOT NULL,
-  `tweetId` INT NOT NULL,
+  `tweetId` BIGINT NOT NULL,
   `status` TEXT NOT NULL,
   `favDate` DATETIME NOT NULL,
   `unfavDate` DATETIME NULL,
