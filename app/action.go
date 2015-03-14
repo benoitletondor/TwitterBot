@@ -212,6 +212,23 @@ func actionFavorite() {
 			continue
 		}
 
+		alreadyFav, err := db.HasAlreadyFav(tweet.Id)
+		if err != nil {
+			fmt.Println("Error while checking already fav", err)
+			return
+		}
+
+		if alreadyFav {
+			fmt.Println("Ignoring tweet for favorite, already fav @" + tweet.Text)
+			continue
+		}
+
+		err = db.Favorite{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, TweetId: tweet.Id, Status: tweet.Text, FavDate: time.Now()}.Persist()
+		if err != nil {
+			fmt.Println("Error while persisting fav", err)
+			return
+		}
+
 		_, err = api.Favorite(tweet.Id)
 		if err != nil {
 			if strings.Contains(err.Error(), "139") { // Case of an already favorited tweet
