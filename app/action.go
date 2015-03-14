@@ -290,7 +290,7 @@ func actionUnfavorite() {
 			return
 		}
 
-		_, err = api.Favorite(fav.TweetId)
+		_, err = api.Unfavorite(fav.TweetId)
 		if err != nil {
 			fmt.Println("Error while querying API to unfav : "+fav.Status, err)
 			return

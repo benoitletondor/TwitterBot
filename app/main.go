@@ -1,9 +1,9 @@
 package main
 
 import (
+	"./anaconda"
 	"./db"
 	"fmt"
-	"github.com/ChimeraCoder/anaconda"
 	"github.com/jsgoecke/go-wit"
 	"github.com/robfig/cron"
 	"math/rand"
