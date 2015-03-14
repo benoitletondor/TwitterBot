@@ -1,8 +1,8 @@
 package main
 
 import (
+	"./anaconda"
 	"fmt"
-	"github.com/ChimeraCoder/anaconda"
 	"net/url"
 	"strings"
 )

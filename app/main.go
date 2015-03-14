@@ -1,9 +1,9 @@
 package main
 
 import (
+	"./anaconda"
 	"./db"
 	"fmt"
-	"github.com/ChimeraCoder/anaconda"
 	"github.com/jsgoecke/go-wit"
 	"github.com/robfig/cron"
 	"math/rand"
@@ -49,9 +49,9 @@ func bot() {
 
 	hour := time.Now().Hour()
 	if hour >= WAKE_UP_HOUR || hour < GO_TO_BED_HOUR {
-		performAction()
+		performDailyAction()
 	} else {
-		fmt.Println("zZzzZz")
+		performNightlyAction()
 	}
 
 	fmt.Println("----------- Goes to sleep")

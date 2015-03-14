@@ -10,6 +10,7 @@ type Follow struct {
 	id           int
 	UserId       int64
 	UserName     string
+	TweetId      int64
 	Status       string
 	FollowDate   time.Time
 	UnfollowDate time.Time
