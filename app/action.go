@@ -11,11 +11,12 @@ import (
 )
 
 const (
-	_FOLLOW   = iota
-	_UNFOLLOW = iota
-	_FAVORITE = iota
-	_TWEET    = iota
-	_REPLY    = iota
+	_FOLLOW     = iota
+	_UNFOLLOW   = iota
+	_FAVORITE   = iota
+	_UNFAVORITE = iota
+	_TWEET      = iota
+	_REPLY      = iota
 )
 
 type Action struct {
@@ -29,6 +30,7 @@ func performDailyAction() {
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_UNFOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_FAVORITE_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _UNFAVORITE, weight: ACTION_UNFAVORITE_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _TWEET, weight: ACTION_TWEET_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _REPLY, weight: ACTION_REPLY_WEIGHT * rand.Intn(100)})
 
@@ -41,6 +43,7 @@ func performNightlyAction() {
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_NIGHTLY_FOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_NIGHTLY_UNFOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_NIGHTLY_FAVORITE_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _UNFAVORITE, weight: ACTION_NIGHTLY_UNFAVORITE_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _TWEET, weight: ACTION_NIGHTLY_TWEET_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _REPLY, weight: ACTION_NIGHTLY_REPLY_WEIGHT * rand.Intn(100)})
 
@@ -65,6 +68,9 @@ func selectAndPerformAction(actions []Action) {
 		break
 	case _FAVORITE:
 		actionFavorite()
+		break
+	case _UNFAVORITE:
+		actionUnfavorite()
 		break
 	case _TWEET:
 		actionTweet()
@@ -219,7 +225,7 @@ func actionFavorite() {
 		}
 
 		if alreadyFav {
-			fmt.Println("Ignoring tweet for favorite, already fav @" + tweet.Text)
+			fmt.Println("Ignoring tweet for favorite, already fav tweet from @" + tweet.User.ScreenName)
 			continue
 		}
 
@@ -241,6 +247,56 @@ func actionFavorite() {
 		}
 
 		i++
+	}
+}
+
+func actionUnfavorite() {
+	fmt.Println("Action unfavorite")
+
+	date := time.Now()
+	duration, err := time.ParseDuration("-72") // -3 days
+	date = date.Add(duration)
+
+	favs, err := db.GetNotUnfavorite(date, UNFAVORITE_LIMIT_IN_A_ROW)
+	if err != nil {
+		fmt.Println("Error while querying db to find tweet to unfav", err)
+		return
+	}
+
+	for _, fav := range favs {
+		fav.LastAction = time.Now()
+
+		isFollowing, err := isUserFollowing(fav.UserName)
+		if err != nil {
+			fmt.Println("Error while querying API for friendships", err)
+			return
+		}
+
+		if isFollowing {
+			err = fav.Persist()
+			if err != nil {
+				fmt.Println("Error while persisting fav", err)
+				return
+			}
+
+			continue
+		}
+
+		fav.UnfavDate = time.Now()
+
+		err = fav.Persist()
+		if err != nil {
+			fmt.Println("Error while persisting fav", err)
+			return
+		}
+
+		_, err = api.Favorite(fav.TweetId)
+		if err != nil {
+			fmt.Println("Error while querying API to unfav : "+fav.Status, err)
+			return
+		}
+
+		fmt.Println("Unfaved @" + fav.Status)
 	}
 }
 
