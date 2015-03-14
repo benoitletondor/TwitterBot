@@ -23,7 +23,7 @@ type Action struct {
 	weight int
 }
 
-func performAction() {
+func performDailyAction() {
 	actions := make([]Action, 0, 5)
 
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
@@ -32,6 +32,22 @@ func performAction() {
 	actions = append(actions, Action{name: _TWEET, weight: ACTION_TWEET_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _REPLY, weight: ACTION_REPLY_WEIGHT * rand.Intn(100)})
 
+	selectAndPerformAction(actions)
+}
+
+func performNightlyAction() {
+	actions := make([]Action, 0, 5)
+
+	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_NIGHTLY_FOLLOW_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_NIGHTLY_UNFOLLOW_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_NIGHTLY_FAVORITE_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _TWEET, weight: ACTION_NIGHTLY_TWEET_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _REPLY, weight: ACTION_NIGHTLY_REPLY_WEIGHT * rand.Intn(100)})
+
+	selectAndPerformAction(actions)
+}
+
+func selectAndPerformAction(actions []Action) {
 	selectedAction := Action{name: -1, weight: -1}
 
 	for _, action := range actions {
