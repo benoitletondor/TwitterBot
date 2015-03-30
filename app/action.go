@@ -119,7 +119,7 @@ func actionFollow() {
 			continue
 		}
 
-		err := db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
+		err = db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
 		if err != nil {
 			fmt.Println("Error while persisting follow", err)
 			return
