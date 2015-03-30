@@ -84,7 +84,7 @@ CREATE TABLE `favorite` (
   `favDate` DATETIME NOT NULL,
   `unfavDate` DATETIME NULL,
   `lastAction` DATETIME NOT NULL,
-  PRIMARY KEY (`idfavorite`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
