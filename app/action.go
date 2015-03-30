@@ -93,7 +93,6 @@ func actionFollow() {
 	}
 
 	for _, tweet := range searchResult.Statuses {
-
 		if !isUserAcceptable(tweet) {
 			fmt.Println("Ignoring user for follow : @" + tweet.User.ScreenName)
 			continue
@@ -110,23 +109,29 @@ func actionFollow() {
 		}
 
 		follow, err := db.AlreadyFollow(tweet.User.Id)
-		if err == nil && !follow {
-
-			err := db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
-			if err != nil {
-				fmt.Println("Error while persisting follow", err)
-				return
-			}
-
-			_, err = api.FollowUser(tweet.User.ScreenName)
-			if err != nil {
-				fmt.Println("Error while following user "+tweet.User.ScreenName+" : ", err)
-			}
-
-			fmt.Println("Now follow ", tweet.User.ScreenName)
+		if err != nil {
+			fmt.Println("Error while checking if already follow")
 			return
 		}
 
+		if follow {
+			fmt.Println("Ignoring user for follow, already follow @" + tweet.User.ScreenName)
+			continue
+		}
+
+		err := db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
+		if err != nil {
+			fmt.Println("Error while persisting follow", err)
+			return
+		}
+
+		_, err = api.FollowUser(tweet.User.ScreenName)
+		if err != nil {
+			fmt.Println("Error while following user "+tweet.User.ScreenName+" : ", err)
+		}
+
+		fmt.Println("Now follow ", tweet.User.ScreenName)
+		return
 	}
 }
 

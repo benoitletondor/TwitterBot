@@ -64,7 +64,7 @@ func generateAPISearchValues(word string) (string, url.Values) {
 
 	v := url.Values{}
 	v.Add("lang", ACCEPTED_LANGUAGE)
-	v.Add("count", "50")
+	v.Add("count", "100")
 
 	return url.QueryEscape(searchString), v
 }
