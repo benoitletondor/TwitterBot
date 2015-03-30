@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -25,7 +26,11 @@ func generateTweetContent() (Content, error) {
 	}
 
 	for _, content := range contents {
-		tweetExists, err := db.HasTweetWithContent(content.text + " " + content.url)
+		if strings.Contains(content.text, "\\") {
+			continue
+		}
+
+		tweetExists, err := db.HasTweetWithContent(content.text)
 
 		if err == nil && !tweetExists {
 			return addHashTags(content), nil
