@@ -62,9 +62,14 @@ func generateAPISearchValues(word string) (string, url.Values) {
 		searchString += " -" + word
 	}
 
+	for _, account := range BANNED_ACCOUNTS {
+		searchString += 
+	}
+
 	v := url.Values{}
 	v.Add("lang", ACCEPTED_LANGUAGE)
 	v.Add("count", "100")
+	v.Add("result_type", "recent")
 
 	return url.QueryEscape(searchString), v
 }
