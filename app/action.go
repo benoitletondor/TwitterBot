@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./content"
 	"./db"
 	"fmt"
 	"math/rand"
@@ -319,13 +320,13 @@ func actionTweet() {
 		return
 	}
 
-	content, err := generateTweetContent()
+	content, err := content.GenerateTweetContent()
 	if err != nil {
 		fmt.Println("Error while getting tweet content : ", err)
 		return
 	}
 
-	tweetText := content.text + " " + content.url + content.hashtags
+	tweetText := content.Text + " " + content.Url + content.Hashtags
 
 	err = db.Tweet{Content: tweetText, Date: time.Now()}.Persist()
 	if err != nil {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"./anaconda"
+	"./content"
 	"./db"
 	"fmt"
 	"github.com/jsgoecke/go-wit"
@@ -19,12 +20,20 @@ func main() {
 	anaconda.SetConsumerSecret(CONSUMER_SECRET)
 	api = anaconda.NewTwitterApi(TOKEN, TOKEN_SECRET)
 
+	// Init DB
 	database, err := db.Init(MYSQL_USER, MYSQL_PASSWORD, MYSQL_SCHEMA)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	defer database.Close()
+
+	// Init Content
+	content.Init(HASHTAGS, T_CO_URL_LENGTH)
+
+	for _, kimonoDataSourcesUrl := range KIMONO_DATA_SOURCES {
+		content.RegisterAPI(content.KimonoContent{Url: kimonoDataSourcesUrl})
+	}
 
 	// Init WIT api
 	witclient = wit.NewClient(WIT_ACCESS_TOKEN)

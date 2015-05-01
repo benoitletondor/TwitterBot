@@ -37,7 +37,7 @@ package main
 //const MYSQL_PASSWORD string = ""
 //const MYSQL_SCHEMA string = ""
 
-//var DATA_SOURCES = []string{"http://api1", "http://api2"}
+//var KIMONO_DATA_SOURCES = []string{"https://www.kimonolabs.com/api", "https://www.kimonolabs.com/api"}
 //var KEYWORDS = []string{"key1", "key2}
 //var HASHTAGS = []string{"hash1", "hash2"}
 
