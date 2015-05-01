@@ -120,6 +120,17 @@ func actionFollow() {
 			continue
 		}
 
+		alreadyFollowMe, err := isUserFollowing(tweet.User.ScreenName)
+		if err != nil {
+			fmt.Println("Error while checking user already follow", err)
+			return
+		}
+
+		if alreadyFollowMe {
+			fmt.Println("Ignoring user @" + tweet.User.ScreenName + " for follow cause he already follow us")
+			continue
+		}
+
 		err = db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
 		if err != nil {
 			fmt.Println("Error while persisting follow", err)
