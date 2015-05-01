@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./anaconda"
 	"fmt"
+	"github.com/benoitletondor/anaconda"
 	"github.com/jsgoecke/go-wit"
 	"math/rand"
 	"strings"

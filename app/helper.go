@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./anaconda"
 	"./db"
 	"fmt"
+	"github.com/benoitletondor/anaconda"
 	"net/url"
 	"strings"
 	"time"

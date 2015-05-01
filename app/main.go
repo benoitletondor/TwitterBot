@@ -1,10 +1,10 @@
 package main
 
 import (
-	"./anaconda"
 	"./content"
 	"./db"
 	"fmt"
+	"github.com/benoitletondor/anaconda"
 	"github.com/jsgoecke/go-wit"
 	"github.com/robfig/cron"
 	"math/rand"
