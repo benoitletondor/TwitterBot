@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./content"
 	"./db"
 	"fmt"
 	"math/rand"
@@ -116,6 +117,17 @@ func actionFollow() {
 
 		if follow {
 			fmt.Println("Ignoring user for follow, already follow @" + tweet.User.ScreenName)
+			continue
+		}
+
+		alreadyFollowMe, err := isUserFollowing(tweet.User.ScreenName)
+		if err != nil {
+			fmt.Println("Error while checking user already follow", err)
+			return
+		}
+
+		if alreadyFollowMe {
+			fmt.Println("Ignoring user @" + tweet.User.ScreenName + " for follow cause he already follow us")
 			continue
 		}
 
@@ -319,13 +331,13 @@ func actionTweet() {
 		return
 	}
 
-	content, err := generateTweetContent()
+	content, err := content.GenerateTweetContent()
 	if err != nil {
 		fmt.Println("Error while getting tweet content : ", err)
 		return
 	}
 
-	tweetText := content.text + " " + content.url + content.hashtags
+	tweetText := content.Text + " " + content.Url + content.Hashtags
 
 	err = db.Tweet{Content: tweetText, Date: time.Now()}.Persist()
 	if err != nil {
