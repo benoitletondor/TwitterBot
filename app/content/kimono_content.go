@@ -44,12 +44,24 @@ func (kimono KimonoContent) callAPI() ([]Content, error) {
 
 										if text, ok := contentData["text"].(string); ok {
 
-											if href, ok := contentData["href"].(string); ok {
+											if property2, ok := property["property2"]; ok {
 
-												contents = append(contents, Content{Text: text, Url: href})
+												if contentData, ok := property2.(map[string]interface{}); ok {
 
+													if href, ok := contentData["href"].(string); ok {
+
+														contents = append(contents, Content{Text: text, Url: href})
+
+													} else {
+														fmt.Println("Error mapping href as string")
+														return nil, errors.New("json mapping error")
+													}
+												} else {
+													fmt.Println("Error mapping property2 as json obj")
+													return nil, errors.New("json mapping error")
+												}
 											} else {
-												fmt.Println("Error mapping href as string")
+												fmt.Println("Missing mappings property2")
 												return nil, errors.New("json mapping error")
 											}
 
