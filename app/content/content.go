@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -41,7 +42,7 @@ func GenerateTweetContent() (Content, error) {
 	}
 
 	for _, content := range contents {
-		if strings.Contains(content.Text, "\\") {
+		if strings.Contains(strconv.QuoteToASCII(content.Text), "\\") {
 			continue
 		}
 
