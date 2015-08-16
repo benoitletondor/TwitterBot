@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./content"
 	"./db"
 	"fmt"
 	"math/rand"
@@ -11,11 +12,12 @@ import (
 )
 
 const (
-	_FOLLOW   = iota
-	_UNFOLLOW = iota
-	_FAVORITE = iota
-	_TWEET    = iota
-	_REPLY    = iota
+	_FOLLOW     = iota
+	_UNFOLLOW   = iota
+	_FAVORITE   = iota
+	_UNFAVORITE = iota
+	_TWEET      = iota
+	_REPLY      = iota
 )
 
 type Action struct {
@@ -23,15 +25,33 @@ type Action struct {
 	weight int
 }
 
-func performAction() {
-	actions := make([]Action, 0, 5)
+func performDailyAction() {
+	actions := make([]Action, 0, 6)
 
 	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_FOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_UNFOLLOW_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_FAVORITE_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _UNFAVORITE, weight: ACTION_UNFAVORITE_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _TWEET, weight: ACTION_TWEET_WEIGHT * rand.Intn(100)})
 	actions = append(actions, Action{name: _REPLY, weight: ACTION_REPLY_WEIGHT * rand.Intn(100)})
 
+	selectAndPerformAction(actions)
+}
+
+func performNightlyAction() {
+	actions := make([]Action, 0, 6)
+
+	actions = append(actions, Action{name: _FOLLOW, weight: ACTION_NIGHTLY_FOLLOW_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _UNFOLLOW, weight: ACTION_NIGHTLY_UNFOLLOW_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _FAVORITE, weight: ACTION_NIGHTLY_FAVORITE_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _UNFAVORITE, weight: ACTION_NIGHTLY_UNFAVORITE_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _TWEET, weight: ACTION_NIGHTLY_TWEET_WEIGHT * rand.Intn(100)})
+	actions = append(actions, Action{name: _REPLY, weight: ACTION_NIGHTLY_REPLY_WEIGHT * rand.Intn(100)})
+
+	selectAndPerformAction(actions)
+}
+
+func selectAndPerformAction(actions []Action) {
 	selectedAction := Action{name: -1, weight: -1}
 
 	for _, action := range actions {
@@ -49,6 +69,9 @@ func performAction() {
 		break
 	case _FAVORITE:
 		actionFavorite()
+		break
+	case _UNFAVORITE:
+		actionUnfavorite()
 		break
 	case _TWEET:
 		actionTweet()
@@ -71,7 +94,6 @@ func actionFollow() {
 	}
 
 	for _, tweet := range searchResult.Statuses {
-
 		if !isUserAcceptable(tweet) {
 			fmt.Println("Ignoring user for follow : @" + tweet.User.ScreenName)
 			continue
@@ -88,23 +110,40 @@ func actionFollow() {
 		}
 
 		follow, err := db.AlreadyFollow(tweet.User.Id)
-		if err == nil && !follow {
-
-			err := db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
-			if err != nil {
-				fmt.Println("Error while persisting follow", err)
-				return
-			}
-
-			_, err = api.FollowUser(tweet.User.ScreenName)
-			if err != nil {
-				fmt.Println("Error while following user "+tweet.User.ScreenName+" : ", err)
-			}
-
-			fmt.Println("Now follow ", tweet.User.ScreenName)
+		if err != nil {
+			fmt.Println("Error while checking if already follow")
 			return
 		}
 
+		if follow {
+			fmt.Println("Ignoring user for follow, already follow @" + tweet.User.ScreenName)
+			continue
+		}
+
+		alreadyFollowMe, err := isUserFollowing(tweet.User.ScreenName)
+		if err != nil {
+			fmt.Println("Error while checking user already follow", err)
+			return
+		}
+
+		if alreadyFollowMe {
+			fmt.Println("Ignoring user @" + tweet.User.ScreenName + " for follow cause he already follow us")
+			continue
+		}
+
+		err = db.Follow{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, Status: tweet.Text, FollowDate: time.Now()}.Persist()
+		if err != nil {
+			fmt.Println("Error while persisting follow", err)
+			return
+		}
+
+		_, err = api.FollowUser(tweet.User.ScreenName)
+		if err != nil {
+			fmt.Println("Error while following user "+tweet.User.ScreenName+" : ", err)
+		}
+
+		fmt.Println("Now follow ", tweet.User.ScreenName)
+		return
 	}
 }
 
@@ -112,7 +151,7 @@ func actionUnfollow() {
 	fmt.Println("Action unfollow")
 
 	date := time.Now()
-	duration, err := time.ParseDuration("-72") // -3 days
+	duration, err := time.ParseDuration("-72h") // -3 days
 	date = date.Add(duration)
 
 	follows, err := db.GetNotUnfollowed(date, UNFOLLOW_LIMIT_IN_A_ROW)
@@ -196,6 +235,23 @@ func actionFavorite() {
 			continue
 		}
 
+		alreadyFav, err := db.HasAlreadyFav(tweet.Id)
+		if err != nil {
+			fmt.Println("Error while checking already fav", err)
+			return
+		}
+
+		if alreadyFav {
+			fmt.Println("Ignoring tweet for favorite, already fav tweet from @" + tweet.User.ScreenName)
+			continue
+		}
+
+		err = db.Favorite{UserId: tweet.User.Id, UserName: tweet.User.ScreenName, TweetId: tweet.Id, Status: tweet.Text, FavDate: time.Now()}.Persist()
+		if err != nil {
+			fmt.Println("Error while persisting fav", err)
+			return
+		}
+
 		_, err = api.Favorite(tweet.Id)
 		if err != nil {
 			if strings.Contains(err.Error(), "139") { // Case of an already favorited tweet
@@ -208,6 +264,56 @@ func actionFavorite() {
 		}
 
 		i++
+	}
+}
+
+func actionUnfavorite() {
+	fmt.Println("Action unfavorite")
+
+	date := time.Now()
+	duration, err := time.ParseDuration("-72h") // -3 days
+	date = date.Add(duration)
+
+	favs, err := db.GetNotUnfavorite(date, UNFAVORITE_LIMIT_IN_A_ROW)
+	if err != nil {
+		fmt.Println("Error while querying db to find tweet to unfav", err)
+		return
+	}
+
+	for _, fav := range favs {
+		fav.LastAction = time.Now()
+
+		isFollowing, err := isUserFollowing(fav.UserName)
+		if err != nil {
+			fmt.Println("Error while querying API for friendships", err)
+			return
+		}
+
+		if isFollowing {
+			err = fav.Persist()
+			if err != nil {
+				fmt.Println("Error while persisting fav", err)
+				return
+			}
+
+			continue
+		}
+
+		fav.UnfavDate = time.Now()
+
+		err = fav.Persist()
+		if err != nil {
+			fmt.Println("Error while persisting fav", err)
+			return
+		}
+
+		_, err = api.Unfavorite(fav.TweetId)
+		if err != nil {
+			fmt.Println("Error while querying API to unfav : "+fav.Status, err)
+			return
+		}
+
+		fmt.Println("Unfaved @" + fav.Status)
 	}
 }
 
@@ -225,13 +331,13 @@ func actionTweet() {
 		return
 	}
 
-	content, err := generateTweetContent()
+	content, err := content.GenerateTweetContent()
 	if err != nil {
 		fmt.Println("Error while getting tweet content : ", err)
 		return
 	}
 
-	tweetText := content.text + " " + content.url + content.hashtags
+	tweetText := content.Text + " " + content.Url + content.Hashtags
 
 	err = db.Tweet{Content: tweetText, Date: time.Now()}.Persist()
 	if err != nil {

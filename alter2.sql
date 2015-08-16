@@ -1,0 +1,11 @@
+CREATE TABLE `favorite` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` BIGINT NOT NULL,
+  `userName` VARCHAR(100) NOT NULL,
+  `tweetId` BIGINT NOT NULL,
+  `status` TEXT NOT NULL,
+  `favDate` DATETIME NOT NULL,
+  `unfavDate` DATETIME NULL,
+  `lastAction` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;

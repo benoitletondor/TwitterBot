@@ -1,10 +1,12 @@
 package main
 
 import (
+	"./db"
 	"fmt"
 	"github.com/ChimeraCoder/anaconda"
 	"net/url"
 	"strings"
+	"time"
 )
 
 func stringInSlice(a string, list []string) bool {
@@ -64,7 +66,8 @@ func generateAPISearchValues(word string) (string, url.Values) {
 
 	v := url.Values{}
 	v.Add("lang", ACCEPTED_LANGUAGE)
-	v.Add("count", "50")
+	v.Add("count", "100")
+	v.Add("result_type", "recent")
 
 	return url.QueryEscape(searchString), v
 }
@@ -75,4 +78,32 @@ func isMentionOrRT(tweet anaconda.Tweet) bool {
 
 func isMe(tweet anaconda.Tweet) bool {
 	return strings.ToLower(tweet.User.ScreenName) == strings.ToLower(USER_NAME)
+}
+
+func hasReachDailyTweetLimit() (bool, error) {
+	var from time.Time
+	var to time.Time
+
+	now := time.Now()
+
+	if now.Hour() >= WAKE_UP_HOUR {
+		from = time.Date(now.Year(), now.Month(), now.Day(), WAKE_UP_HOUR, 0, 0, 0, now.Location())
+	} else {
+		yesterday := now.Add(-time.Duration(24) * time.Hour)
+		from = time.Date(yesterday.Year(), yesterday.Month(), yesterday.Day(), WAKE_UP_HOUR, 0, 0, 0, yesterday.Location())
+	}
+
+	if now.Hour() < GO_TO_BED_HOUR {
+		to = time.Date(now.Year(), now.Month(), now.Day(), GO_TO_BED_HOUR, 0, 0, 0, now.Location())
+	} else {
+		tomorrow := now.Add(time.Duration(24) * time.Hour)
+		to = time.Date(tomorrow.Year(), tomorrow.Month(), tomorrow.Day(), GO_TO_BED_HOUR, 0, 0, 0, tomorrow.Location())
+	}
+
+	count, err := db.GetNumberOfTweetsBetweenDates(from, to)
+	if err != nil {
+		return true, err
+	}
+
+	return count >= MAX_TWEET_IN_A_DAY, nil
 }

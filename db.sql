@@ -67,6 +67,27 @@ CREATE TABLE `reply` (
   KEY `TweetId` (`tweetId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `favorite`
+--
+
+DROP TABLE IF EXISTS `favorite`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `favorite` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `userId` BIGINT NOT NULL,
+  `userName` VARCHAR(100) NOT NULL,
+  `tweetId` BIGINT NOT NULL,
+  `status` TEXT NOT NULL,
+  `favDate` DATETIME NOT NULL,
+  `unfavDate` DATETIME NULL,
+  `lastAction` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -76,5 +97,3 @@ CREATE TABLE `reply` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2015-02-15 19:22:16

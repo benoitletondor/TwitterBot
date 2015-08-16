@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./content"
 	"./db"
 	"fmt"
 	"github.com/ChimeraCoder/anaconda"
@@ -19,12 +20,20 @@ func main() {
 	anaconda.SetConsumerSecret(CONSUMER_SECRET)
 	api = anaconda.NewTwitterApi(TOKEN, TOKEN_SECRET)
 
+	// Init DB
 	database, err := db.Init(MYSQL_USER, MYSQL_PASSWORD, MYSQL_SCHEMA)
 	if err != nil {
 		panic(err.Error())
 	}
 
 	defer database.Close()
+
+	// Init Content
+	content.Init(HASHTAGS, T_CO_URL_LENGTH)
+
+	for _, kimonoDataSourcesUrl := range KIMONO_DATA_SOURCES {
+		content.RegisterAPI(content.KimonoContent{Url: kimonoDataSourcesUrl})
+	}
 
 	// Init WIT api
 	witclient = wit.NewClient(WIT_ACCESS_TOKEN)
@@ -49,9 +58,9 @@ func bot() {
 
 	hour := time.Now().Hour()
 	if hour >= WAKE_UP_HOUR || hour < GO_TO_BED_HOUR {
-		performAction()
+		performDailyAction()
 	} else {
-		fmt.Println("zZzzZz")
+		performNightlyAction()
 	}
 
 	fmt.Println("----------- Goes to sleep")
