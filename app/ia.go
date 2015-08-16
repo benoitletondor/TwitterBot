@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/benoitletondor/anaconda"
+	"github.com/ChimeraCoder/anaconda"
 	"github.com/jsgoecke/go-wit"
 	"math/rand"
 	"strings"

@@ -3,7 +3,7 @@ package main
 import (
 	"./db"
 	"fmt"
-	"github.com/benoitletondor/anaconda"
+	"github.com/ChimeraCoder/anaconda"
 	"net/url"
 	"strings"
 	"time"

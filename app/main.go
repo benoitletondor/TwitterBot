@@ -4,7 +4,7 @@ import (
 	"./content"
 	"./db"
 	"fmt"
-	"github.com/benoitletondor/anaconda"
+	"github.com/ChimeraCoder/anaconda"
 	"github.com/jsgoecke/go-wit"
 	"github.com/robfig/cron"
 	"math/rand"
