@@ -190,7 +190,7 @@ func actionUnfollow() {
 		_, err = api.UnfollowUser(follow.UserName)
 		if err != nil {
 			fmt.Println("Error while querying API to unfollow @"+follow.UserName, err)
-			return
+			continue
 		}
 
 		fmt.Println("Unfollowed @" + follow.UserName)
@@ -310,7 +310,7 @@ func actionUnfavorite() {
 		_, err = api.Unfavorite(fav.TweetId)
 		if err != nil {
 			fmt.Println("Error while querying API to unfav : "+fav.Status, err)
-			return
+			continue
 		}
 
 		fmt.Println("Unfaved @" + fav.Status)
