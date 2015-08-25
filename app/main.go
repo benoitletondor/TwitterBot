@@ -58,18 +58,12 @@ func bot() {
 
 	hour := time.Now().Hour()
 
-	if GO_TO_BED_HOUR < WAKE_UP_HOUR {
-		if hour >= WAKE_UP_HOUR || hour < GO_TO_BED_HOUR {
-			performDailyAction()
-		} else {
-			performNightlyAction()
-		}
+	if GO_TO_BED_HOUR < WAKE_UP_HOUR && (hour >= WAKE_UP_HOUR || hour < GO_TO_BED_HOUR) {
+		performDailyAction()
+	} else if GO_TO_BED_HOUR > WAKE_UP_HOUR && (hour >= WAKE_UP_HOUR && hour < GO_TO_BED_HOUR) {
+		performDailyAction()
 	} else {
-		if hour >= WAKE_UP_HOUR && hour < GO_TO_BED_HOUR {
-			performDailyAction()
-		} else {
-			performNightlyAction()
-		}
+		performNightlyAction()
 	}
 
 	fmt.Println("----------- Goes to sleep")
