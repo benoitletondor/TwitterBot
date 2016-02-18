@@ -51,6 +51,10 @@ func main() {
 		content.RegisterAPI(content.KimonoContent{Url: kimonoDataSourcesUrl})
 	}
 
+	for _, redditDataSourceUrl := range REDDIT_DATA_SOURCES {
+		content.RegisterAPI(content.RedditContent{Url: redditDataSourceUrl})
+	}
+
 	// Init WIT api
 	witclient = wit.NewClient(WIT_ACCESS_TOKEN)
 

@@ -33,7 +33,7 @@ type ContentAPI interface {
 
 var apis []ContentAPI
 var hashtags []string
-var urlLenght int
+var urlLength int
 
 type Content struct {
 	Text     string
@@ -44,7 +44,7 @@ type Content struct {
 func Init(tags []string, urlL int) {
 	apis = make([]ContentAPI, 0)
 	hashtags = tags
-	urlLenght = urlL
+	urlLength = urlL
 }
 
 func RegisterAPI(contentAPI ContentAPI) {
