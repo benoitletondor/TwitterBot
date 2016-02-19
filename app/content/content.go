@@ -85,7 +85,7 @@ func addHashTags(content Content) Content {
 
 	sort.Sort(ByRandom(tags))
 
-	margin := 140 - urlLenght - len(content.Text) - 1 // -1 for the space between link and text
+	margin := 140 - urlLength - len(content.Text) - 1 // -1 for the space between link and text
 
 	for i, hashtag := range tags {
 		if i >= numberOfTags {
