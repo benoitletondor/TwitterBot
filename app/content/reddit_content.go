@@ -18,6 +18,7 @@ package content
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -25,6 +26,11 @@ import (
 type RedditContent struct {
 	Url string
 }
+
+const (
+	// set it to false at compilation to not ignore self posts
+	REDDIT_IGNORE_SELF_POST = true
+)
 
 func (reddit RedditContent) callAPI() ([]Content, error) {
 	doc, err := goquery.NewDocument(reddit.Url)
@@ -50,6 +56,11 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 		externalLink, _ := l.Attr("href")
 
 		if strings.HasPrefix(externalLink, "/r/") {
+			// ignore self post
+			if REDDIT_IGNORE_SELF_POST {
+				return
+			}
+			// link to the self post
 			externalLink = "https://reddit.com" + externalLink
 		}
 
