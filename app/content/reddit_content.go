@@ -49,6 +49,10 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 		title := l.First().Text()
 		externalLink, _ := l.Attr("href")
 
+		if strings.HasPrefix(externalLink, "/r/") {
+			externalLink = "https://reddit.com" + externalLink
+		}
+
 		rv = append(rv, Content{
 			Text: title,
 			Url:  externalLink,
