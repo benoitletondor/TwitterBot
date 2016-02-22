@@ -54,6 +54,7 @@ package main
 //const MYSQL_SCHEMA string = ""
 
 //var KIMONO_DATA_SOURCES = []string{"https://www.kimonolabs.com/api", "https://www.kimonolabs.com/api"}
+//var REDDIT_DATA_SOURCES = []string{}
 //var KEYWORDS = []string{"key1", "key2}
 //var HASHTAGS = []string{"hash1", "hash2"}
 
