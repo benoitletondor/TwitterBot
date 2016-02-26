@@ -50,10 +50,10 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 		title := l.First().Text()
 		externalLink, _ := l.Attr("href")
 
-		// ignore self posts
+		// self posts
 		if strings.HasPrefix(externalLink, "/r/") {
-			return
-		}
+ 			externalLink = "https://reddit.com" + externalLink
+ 		}
 
 		rv = append(rv, Content{
 			Text: title,
