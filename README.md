@@ -22,6 +22,7 @@ This project was a way for me to try Golang and see what I can do with it. It us
 - [Anaconda](https://github.com/ChimeraCoder/anaconda): An open source library to access Twitter API
 - [Go SQL Driver](https://github.com/go-sql-driver/mysql): A Golang MySQL driver
 - [Go-wit](https://github.com/jsgoecke/go-wit): A Golang API for [wit.ai](https://wit.ai/)
+- [goquery](https://github.com/PuerkitoBio/goquery): CSS-selector like DOM parser.
 
 ### Test account
 
