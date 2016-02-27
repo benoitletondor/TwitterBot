@@ -18,8 +18,8 @@ package main
 
 import (
 	"./db"
-	"fmt"
 	"github.com/ChimeraCoder/anaconda"
+	"log"
 	"net/url"
 	"strings"
 	"time"
@@ -37,7 +37,7 @@ func stringInSlice(a string, list []string) bool {
 func isUserFollowing(userName string) (bool, error) {
 	friendships, err := api.GetFriendshipsLookup(url.Values{"screen_name": []string{userName}})
 	if err != nil {
-		fmt.Println("Error while querying twitter api for friendships", err)
+		log.Println("Error while querying twitter api for friendships", err)
 		return false, err
 	}
 
