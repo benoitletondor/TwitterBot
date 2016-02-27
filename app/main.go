@@ -64,6 +64,9 @@ func main() {
 
 	ticker := time.NewTicker(d)
 
+	// do a first launch for immediate action before starting the ticker
+	bot()
+
 	// wake up and go to sleep forever ever and never. tintintin.
 	for range ticker.C {
 		bot()
