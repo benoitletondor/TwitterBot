@@ -19,10 +19,10 @@ package main
 import (
 	"./content"
 	"./db"
-	"fmt"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/jsgoecke/go-wit"
 	"github.com/robfig/cron"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -66,7 +66,7 @@ func main() {
 	// Init random
 	rand.Seed(time.Now().UnixNano())
 
-	fmt.Println("Hello world")
+	log.Println("Hello world")
 
 	bot()
 
@@ -74,7 +74,7 @@ func main() {
 }
 
 func bot() {
-	fmt.Println("----------- Waking up!")
+	log.Println("----------- Waking up!")
 
 	hour := time.Now().Hour()
 
@@ -86,5 +86,5 @@ func bot() {
 		performNightlyAction()
 	}
 
-	fmt.Println("----------- Goes to sleep")
+	log.Println("----------- Goes to sleep")
 }
