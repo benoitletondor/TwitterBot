@@ -19,7 +19,7 @@ package main
 // Rename this file conf.go and replace with actual values
 
 //const USER_NAME = "twitterName"
-//const ACTIONS_INTERVAL = "@every 30m"
+//const ACTIONS_INTERVAL = "30m"
 //const WAKE_UP_HOUR int = 16
 //const GO_TO_BED_HOUR int = 8
 
