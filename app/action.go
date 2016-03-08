@@ -71,6 +71,10 @@ func selectAndPerformAction(actions []Action) {
 	selectedAction := Action{name: -1, weight: -1}
 
 	for _, action := range actions {
+		if action.weight == 0 {
+			continue
+		}
+
 		if action.weight > selectedAction.weight {
 			selectedAction = action
 		}
@@ -94,6 +98,9 @@ func selectAndPerformAction(actions []Action) {
 		break
 	case _REPLY:
 		actionReply()
+		break
+	default:
+		log.Println("Nothing to do")
 		break
 	}
 }
