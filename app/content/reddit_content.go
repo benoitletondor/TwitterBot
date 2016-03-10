@@ -46,10 +46,10 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 		}
 
 		t := selec.Find("a.search-title,a.title")
-		title := t.Text()
+		title := t.First().Text()
 
 		l := selec.Find("a.search-link,a.link")
-		externalLink, _ := l.Attr("href")
+		externalLink, _ := l.First().Attr("href")
 
 		// self posts
 		if strings.HasPrefix(externalLink, "/r/") {
