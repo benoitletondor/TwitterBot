@@ -19,7 +19,6 @@ package content
 import (
 	"fmt"
 	"strings"
-
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -36,7 +35,7 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 
 	rv := make([]Content, 0)
 
-	doc.Find(".link").Each(func(i int, selec *goquery.Selection) {
+	doc.Find("div.search-result,div.entry").Each(func(i int, selec *goquery.Selection) {
 		// ignore sticky posts
 		if selec.HasClass("stickied") {
 			return
@@ -46,8 +45,10 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 			return
 		}
 
-		l := selec.Find("p.title a.title")
-		title := l.First().Text()
+		t := selec.Find("a.search-title,a.title")
+		title := t.Text()
+
+		l := selec.Find("a.search-link,a.link")
 		externalLink, _ := l.Attr("href")
 
 		// self posts
