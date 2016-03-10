@@ -24,6 +24,7 @@ import (
 	"log"
 	"math/rand"
 	"time"
+	"fmt"
 )
 
 var api *anaconda.TwitterApi
