@@ -19,10 +19,9 @@ package main
 import (
 	"./content"
 	"./db"
-	"fmt"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/jsgoecke/go-wit"
-	"github.com/robfig/cron"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -51,42 +50,47 @@ func main() {
 		content.RegisterAPI(content.KimonoContent{Url: kimonoDataSourcesUrl})
 	}
 
+	for _, redditDataSourceUrl := range REDDIT_DATA_SOURCES {
+		content.RegisterAPI(content.RedditContent{Url: redditDataSourceUrl})
+	}
+
 	// Init WIT api
 	witclient = wit.NewClient(WIT_ACCESS_TOKEN)
-
-	// Init cron
-	c := cron.New()
-	c.AddFunc(ACTIONS_INTERVAL, bot)
-	c.Start()
 
 	// Init random
 	rand.Seed(time.Now().UnixNano())
 
-	fmt.Println("Hello world")
+	// Starts the wake up ticker
+	var d time.Duration
+	if d, err = time.ParseDuration(ACTIONS_INTERVAL); err != nil {
+		panic(fmt.Sprintf("Can't parse as duration the ACTIONS_INTERVAL config value: %s", ACTIONS_INTERVAL))
+	}
 
+	ticker := time.NewTicker(d)
+
+	log.Println("Hello world")
+
+	// do a first launch for immediate action before starting the ticker
 	bot()
 
-	select {} // block forever
+	// wake up and go to sleep forever ever and never. tintintin.
+	for range ticker.C {
+		bot()
+	}
 }
 
 func bot() {
-	fmt.Println("----------- Waking up!")
+	log.Println("----------- Waking up!")
 
 	hour := time.Now().Hour()
 
-	if GO_TO_BED_HOUR < WAKE_UP_HOUR {
-		if hour >= WAKE_UP_HOUR || hour < GO_TO_BED_HOUR {
-			performDailyAction()
-		} else {
-			performNightlyAction()
-		}
+	if GO_TO_BED_HOUR < WAKE_UP_HOUR && (hour >= WAKE_UP_HOUR || hour < GO_TO_BED_HOUR) {
+		performDailyAction()
+	} else if GO_TO_BED_HOUR > WAKE_UP_HOUR && (hour >= WAKE_UP_HOUR && hour < GO_TO_BED_HOUR) {
+		performDailyAction()
 	} else {
-		if hour >= WAKE_UP_HOUR && hour < GO_TO_BED_HOUR {
-			performDailyAction()
-		} else {
-			performNightlyAction()
-		}
+		performNightlyAction()
 	}
 
-	fmt.Println("----------- Goes to sleep")
+	log.Println("----------- Goes to sleep")
 }

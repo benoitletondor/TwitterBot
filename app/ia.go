@@ -17,9 +17,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/ChimeraCoder/anaconda"
 	"github.com/jsgoecke/go-wit"
+	"log"
 	"math/rand"
 	"strings"
 )
@@ -45,9 +45,15 @@ func buildReply(tweet anaconda.Tweet) (string, error) {
 		return "", err
 	}
 
-	intent := result.Outcome.Intent
-	if result.Outcome.Confidence < 0.5 {
-		fmt.Println("Not enough confidence for intent : " + intent)
+	// TODO(remy): quick fix
+	if len(result.Outcomes) == 0 {
+		return "", nil
+	}
+
+	outcome := result.Outcomes[0]
+	intent := outcome.Intent
+	if outcome.Confidence < 0.5 {
+		log.Println("Not enough confidence for intent : " + intent)
 		return "", nil
 	}
 
