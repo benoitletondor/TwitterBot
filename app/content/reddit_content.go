@@ -17,9 +17,9 @@
 package content
 
 import (
-	"fmt"
 	"strings"
 	"github.com/PuerkitoBio/goquery"
+	"log"
 )
 
 type RedditContent struct {
@@ -27,9 +27,15 @@ type RedditContent struct {
 }
 
 func (reddit RedditContent) callAPI() ([]Content, error) {
-	doc, err := goquery.NewDocument(reddit.Url)
+	resp, err := getWebserviceResponse(reddit.Url)
+	if( err != nil ) {
+		log.Println("Error while calling url: "+reddit.Url)
+		return nil, err
+	}
+
+	doc, err := goquery.NewDocumentFromResponse(resp)
 	if err != nil {
-		fmt.Println("Error while calling API")
+		log.Println("Error while calling API")
 		return nil, err
 	}
 
@@ -47,6 +53,11 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 
 		t := selec.Find("a.search-title,a.title")
 		title := t.First().Text()
+
+		// Limit size of content
+		if( len(title) + urlLength > 140 ) {
+			title = title[0:139-urlLength] + "…"
+		}
 
 		l := selec.Find("a.search-link,a.link")
 		externalLink, _ := l.First().Attr("href")
