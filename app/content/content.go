@@ -103,15 +103,23 @@ func addHashTags(content Content) Content {
 	return content
 }
 
-func getWebserviceContent(url string) ([]byte, error) {
+func getWebserviceResponse(url string) (*http.Response, error) {
 	// Build the request
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	// Spoof chrome user agent
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
+
 	// Send the request via a client
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	return client.Do(req)
+}
+
+func getWebserviceContent(url string) ([]byte, error) {
+	resp, err := getWebserviceResponse(url)
 	if err != nil {
 		return nil, err
 	}
