@@ -17,14 +17,15 @@
 package main
 
 import (
-	"./content"
-	"./db"
 	"log"
 	"math/rand"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/benoitletondor/TwitterBot/app/content"
+	"github.com/benoitletondor/TwitterBot/app/db"
 )
 
 const (
