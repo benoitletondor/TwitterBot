@@ -17,7 +17,6 @@
 package content
 
 import (
-	"./../db"
 	"errors"
 	"io/ioutil"
 	"math/rand"
@@ -25,6 +24,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/benoitletondor/TwitterBot/app/db"
 )
 
 type ContentAPI interface {
