@@ -17,12 +17,13 @@
 package main
 
 import (
-	"./db"
-	"github.com/ChimeraCoder/anaconda"
 	"log"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/ChimeraCoder/anaconda"
+	"github.com/benoitletondor/TwitterBot/app/db"
 )
 
 func stringInSlice(a string, list []string) bool {
