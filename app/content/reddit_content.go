@@ -17,9 +17,9 @@
 package content
 
 import (
-	"strings"
 	"github.com/PuerkitoBio/goquery"
 	"log"
+	"strings"
 )
 
 type RedditContent struct {
@@ -28,8 +28,8 @@ type RedditContent struct {
 
 func (reddit RedditContent) callAPI() ([]Content, error) {
 	resp, err := getWebserviceResponse(reddit.Url)
-	if( err != nil ) {
-		log.Println("Error while calling url: "+reddit.Url)
+	if err != nil {
+		log.Println("Error while calling url: " + reddit.Url)
 		return nil, err
 	}
 
@@ -55,7 +55,7 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 		title := t.First().Text()
 
 		// Limit size of content
-		if( len(title) + urlLength > 140 ) {
+		if len(title)+urlLength > 140 {
 			title = title[0:139-urlLength] + "…"
 		}
 
@@ -64,8 +64,8 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 
 		// self posts
 		if strings.HasPrefix(externalLink, "/r/") {
- 			externalLink = "https://reddit.com" + externalLink
- 		}
+			externalLink = "https://reddit.com" + externalLink
+		}
 
 		rv = append(rv, Content{
 			Text: title,
