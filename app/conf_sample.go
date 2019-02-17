@@ -51,7 +51,7 @@ package main
 
 //const MYSQL_USER string = ""
 //const MYSQL_PASSWORD string = ""
-//const MYSQL_SCHEMA string = ""
+//const MYSQL_SCHEMA string = "/db"
 
 //var KIMONO_DATA_SOURCES = []string{"https://www.kimonolabs.com/api", "https://www.kimonolabs.com/api"}
 //var REDDIT_DATA_SOURCES = []string{}

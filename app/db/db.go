@@ -25,7 +25,7 @@ var database *sql.DB
 
 func Init(user string, pass string, schema string) (*sql.DB, error) {
 	// Init Mysql DB
-	dbLink, err := sql.Open("mysql", user+":"+pass+"@/"+schema+"?parseTime=True")
+	dbLink, err := sql.Open("mysql", user+":"+pass+"@"+schema+"?parseTime=True")
 	if err != nil {
 		return nil, err
 	}
