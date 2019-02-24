@@ -27,6 +27,7 @@ package main
 //const CONSUMER_SECRET string = ""
 //const TOKEN string = ""
 //const TOKEN_SECRET string = ""
+//const DEBUG_TWITTER bool = false
 
 //const WIT_ACCESS_TOKEN string = ""
 
