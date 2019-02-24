@@ -161,9 +161,13 @@ func actionFollow() {
 			return
 		}
 
-		_, err = api.FollowUser(tweet.User.ScreenName)
-		if err != nil {
-			log.Println("Error while following user "+tweet.User.ScreenName+" : ", err)
+		if !DEBUG_TWITTER {
+			_, err = api.FollowUser(tweet.User.ScreenName)
+			if err != nil {
+				log.Println("Error while following user "+tweet.User.ScreenName+" : ", err)
+			}
+		} else {
+			log.Println("Debug - Not calling Twitter API: api.FollowUser")
 		}
 
 		log.Println("Now follow ", tweet.User.ScreenName)
@@ -211,10 +215,14 @@ func actionUnfollow() {
 			return
 		}
 
-		_, err = api.UnfollowUser(follow.UserName)
-		if err != nil {
-			log.Println("Error while querying API to unfollow @"+follow.UserName, err)
-			continue
+		if !DEBUG_TWITTER {
+			_, err = api.UnfollowUser(follow.UserName)
+			if err != nil {
+				log.Println("Error while querying API to unfollow @"+follow.UserName, err)
+				continue
+			}
+		} else {
+			log.Println("Debug - Not calling Twitter API: api.UnfollowUser")
 		}
 
 		log.Println("Unfollowed @" + follow.UserName)
@@ -276,15 +284,19 @@ func actionFavorite() {
 			return
 		}
 
-		_, err = api.Favorite(tweet.Id)
-		if err != nil {
-			if strings.Contains(err.Error(), "139") { // Case of an already favorited tweet
-				continue
-			}
+		if !DEBUG_TWITTER {
+			_, err = api.Favorite(tweet.Id)
+			if err != nil {
+				if strings.Contains(err.Error(), "139") { // Case of an already favorited tweet
+					continue
+				}
 
-			log.Println("Error while favoriting tweet", err)
+				log.Println("Error while favoriting tweet", err)
+			} else {
+				log.Println("Just favorited tweet : ", tweet.Text)
+			}
 		} else {
-			log.Println("Just favorited tweet : ", tweet.Text)
+			log.Println("Debug - Not calling Twitter API: api.Favorite")
 		}
 
 		i++
@@ -331,10 +343,14 @@ func actionUnfavorite() {
 			return
 		}
 
-		_, err = api.Unfavorite(fav.TweetId)
-		if err != nil {
-			log.Println("Error while querying API to unfav : "+fav.Status, err)
-			continue
+		if !DEBUG_TWITTER {
+			_, err = api.Unfavorite(fav.TweetId)
+			if err != nil {
+				log.Println("Error while querying API to unfav : "+fav.Status, err)
+				continue
+			}
+		} else {
+			log.Println("Debug - Not calling Twitter API: api.Unfavorite")
 		}
 
 		log.Println("Unfaved @" + fav.Status)
@@ -369,13 +385,17 @@ func actionTweet() {
 		return
 	}
 
-	tweet, err := api.PostTweet(tweetText, nil)
-	if err != nil {
-		log.Println("Error while posting tweet", err)
-		return
-	}
+	if !DEBUG_TWITTER {
+		tweet, err := api.PostTweet(tweetText, nil)
+		if err != nil {
+			log.Println("Error while posting tweet", err)
+			return
+		}
 
-	log.Println("Tweet posted : ", tweet.Text)
+		log.Println("Tweet posted : ", tweet.Text)
+	} else {
+		log.Println("Debug - Not calling Twitter API: api.PostTweet for tweet: ", tweetText)
+	}
 }
 
 func actionReply() {
@@ -409,13 +429,17 @@ func actionReply() {
 				v := url.Values{}
 				v.Add("in_reply_to_status_id", strconv.FormatInt(tweet.Id, 10))
 
-				respTweet, err := api.PostTweet(response, v)
-				if err != nil {
-					log.Println("Error while posting reply", err)
-					return
-				}
+				if !DEBUG_TWITTER {
+					respTweet, err := api.PostTweet(response, v)
+					if err != nil {
+						log.Println("Error while posting reply", err)
+						return
+					}
 
-				log.Println("Reply posted : ", respTweet.Text)
+					log.Println("Reply posted : ", respTweet.Text)
+				} else {
+					log.Println("Debug - Not calling Twitter API: api.PostTweet for tweet: ", response)
+				}
 			} else {
 				log.Println("No response found for tweet : " + tweet.Text)
 			}
