@@ -53,7 +53,7 @@ func (reddit RedditContent) callAPI() ([]Content, error) {
 			return
 		}
 
-		t := selec.Find("h2")
+		t := selec.Find("h3")
 		title := t.First().Find("span").First().Text()
 
 		// Limit size of content
